@@ -14,4 +14,10 @@
 
     <string name="def_bigValue">25°C</string>
     <string name="def_desc_bigValue">Temperatur</string>
+
+    <string name="def_sValue1">23°C</string>
+    <string name="def_desc_sValue1">Minimal</string>
+
+    <string name="def_sValue2">20%</string>
+    <string name="def_desc_sValue2">Feuchte</string>
 </resources>
