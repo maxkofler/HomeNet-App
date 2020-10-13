@@ -13,16 +13,39 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.homenet.R;
+import com.example.homenet.network.HNNetworking;
+
+import org.w3c.dom.Text;
+
+import java.io.CharArrayReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+
+    private TextView tvValues;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        tvValues = root.findViewById(R.id.tvValue);
+
+        HNNetworking net = new HNNetworking();
+        net.setConf("192.168.1.24", 8090);
+        net.syncAll();
+
         return root;
     }
+
+
 }
