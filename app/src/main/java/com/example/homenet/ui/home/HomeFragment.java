@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.homenet.R;
+import com.example.homenet.ValueView;
 import com.example.homenet.network.HNNetworking;
+import com.example.homenet.weathersens.WSValueserver;
 
 import org.w3c.dom.Text;
 
@@ -30,7 +33,10 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
 
-    private TextView tvValues;
+    private String ip = "192.168.1.24";
+    private int port = 8090;
+
+    private LinearLayout ll;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -38,14 +44,21 @@ public class HomeFragment extends Fragment {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        tvValues = root.findViewById(R.id.tvValue);
+        WSValueserver vServer = new WSValueserver(ip, port);
+        vServer.init();
 
-        HNNetworking net = new HNNetworking();
-        net.setConf("192.168.1.24", 8090);
-        net.syncAll();
+        ll = root.findViewById(R.id.ll_values);
+        int countViews = 2;
+
+        ValueView[] vs = new ValueView[countViews];
+
+        for (int i = 0; i < countViews; i++){
+            vs[i] = new ValueView(getContext());
+            vs[i].initialize(i, ip, port);
+            vs[i].setValues(vServer);
+            ll.addView(vs[i]);
+        }
 
         return root;
     }
-
-
 }

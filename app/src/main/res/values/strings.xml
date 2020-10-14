@@ -12,12 +12,16 @@
     <string name="menu_slideshow">Slideshow</string>
 
 
-    <string name="def_bigValue">25°C</string>
+    <string name="def_bigValue">10 °C</string>
     <string name="def_desc_bigValue">Temperatur</string>
 
-    <string name="def_sValue1">23°C</string>
-    <string name="def_desc_sValue1">Minimal</string>
+    <string name="def_sValue1">10 °C</string>
+    <string name="def_desc_sValue1">Minimale Temperatur</string>
 
-    <string name="def_sValue2">20%</string>
-    <string name="def_desc_sValue2">Feuchte</string>
+    <string name="def_sValue2">10 %</string>
+    <string name="def_desc_sValue2"></string>
+
+    <string name="cVD_bigVID">ID des großen Werts:</string>
+    <string name="cVD_sV1ID">ID des 1. kleinen Werts:</string>
+    <string name="cVD_sV2ID">ID des 2. kleinen Werts:</string>
 </resources>
