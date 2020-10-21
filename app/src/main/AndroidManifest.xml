@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ConfigureValueDisplay"></activity>
+        <activity android:name=".Settings"></activity>
+        <activity android:name=".ConfigureValueDisplay" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

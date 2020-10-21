@@ -13,8 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.homenet.network.HNNetworking;
-import com.example.homenet.ui.ConfigureValueDisplay;
 import com.example.homenet.weathersens.WSValueserver;
 
 public class ValueView extends ConstraintLayout {
@@ -98,14 +96,19 @@ public class ValueView extends ConstraintLayout {
     public void setSValue2Desc(String text){ tv_desc_smValue2.setText(text); }
 
     public void setValues(WSValueserver vServer){
-        setBigValueDesc(vServer.getValueName(bigVID));
-        setBigValue(vServer.getValue(bigVID) + " " + vServer.getValueUnit(bigVID));
+        if (vServer.getDataAvailable()){
+            setBigValueDesc(vServer.getValueName(bigVID));
+            setBigValue(vServer.getValue(bigVID) + " " + vServer.getValueUnit(bigVID));
 
-        setSValue1Desc(vServer.getValueName(sV1ID));
-        setSValue1(vServer.getValue(sV1ID) + " " + vServer.getValueUnit(sV1ID));
+            setSValue1Desc(vServer.getValueName(sV1ID));
+            setSValue1(vServer.getValue(sV1ID) + " " + vServer.getValueUnit(sV1ID));
 
-        setSValue2Desc(vServer.getValueName(sV2ID));
-        setSValue2(vServer.getValue(sV2ID) + " " + vServer.getValueUnit(sV2ID));
+            setSValue2Desc(vServer.getValueName(sV2ID));
+            setSValue2(vServer.getValue(sV2ID) + " " + vServer.getValueUnit(sV2ID));
+        }else{
+            System.err.println("Not refreshing tiles! -> no data available!");
+        }
+
     }
 
     @Override

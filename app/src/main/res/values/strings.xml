@@ -24,4 +24,27 @@
     <string name="cVD_bigVID">ID des großen Werts:</string>
     <string name="cVD_sV1ID">ID des 1. kleinen Werts:</string>
     <string name="cVD_sV2ID">ID des 2. kleinen Werts:</string>
+
+
+    //Error Messages
+
+    <string name="err_no_connection_to_server">Keine Verbindung zum Server!</string>
+
+
+    //Preferences keys
+
+    <string name="key_ServerIP">serverIP</string>
+    <string name="key_ServerPort">serverPort</string>
+
+    //Titles
+
+    <string name="title_settings">Einstellungen</string>
+
+    //Settings
+
+        //Server settings
+        <string name="server_settings">Server-Einstellungen</string>
+    
+        <string name="server_ip">IP-Adresse</string>
+        <string name="server_port">Port</string>
 </resources>

@@ -1,6 +1,10 @@
 package com.example.homenet.network;
 
 import android.icu.text.MessagePattern;
+import android.widget.Toast;
+
+import com.example.homenet.ExceptionClasses.NoConnectionToWSServer;
+import com.example.homenet.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,16 +15,21 @@ import java.io.StringReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.NoSuchElementException;
 
 public class HNNetworking {
 
     private String ip;
     private int port;
 
+    private boolean criticalError = false;
+
     private Value[] values;
     private int valuesCount;
 
-    public void syncAll(){
+    public boolean getError(){return criticalError;}
+
+    public void syncAll() throws NoConnectionToWSServer {
         NetworkHandler net = new NetworkHandler(ip, port, "@va");
         Thread netThread = new Thread(net);
         netThread.start();
@@ -29,6 +38,11 @@ public class HNNetworking {
 
             netThread.join();
             recMsg = net.getMsg();
+            if (recMsg == null){
+                System.err.println("Fatal error: Server is not reachable!");
+                criticalError = true;
+                throw new NoConnectionToWSServer();
+            }
 
         } catch (InterruptedException e) {
             e.printStackTrace();

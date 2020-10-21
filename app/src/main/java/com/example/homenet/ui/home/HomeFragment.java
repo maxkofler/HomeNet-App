@@ -1,11 +1,14 @@
 package com.example.homenet.ui.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.homenet.ExceptionClasses.NoConnectionToWSServer;
 import com.example.homenet.R;
 import com.example.homenet.ValueView;
 import com.example.homenet.network.HNNetworking;
@@ -33,6 +37,9 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
 
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor prefseditor;
+
     private String ip = "192.168.1.24";
     private int port = 8090;
 
@@ -44,8 +51,19 @@ public class HomeFragment extends Fragment {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
+        preferences = this.getActivity().getSharedPreferences("hnSettings", Context.MODE_PRIVATE);
+        prefseditor = preferences.edit();
+
+        ip = preferences.getString(getString(R.string.key_ServerIP), "192.168.1.24");
+        port = preferences.getInt(getString(R.string.key_ServerPort), 8090);
+
         WSValueserver vServer = new WSValueserver(ip, port);
-        vServer.init();
+        try{
+            vServer.init();
+        }catch (NoConnectionToWSServer e){
+            Toast.makeText(getContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
+        }
+
 
         ll = root.findViewById(R.id.ll_values);
         int countViews = 2;
