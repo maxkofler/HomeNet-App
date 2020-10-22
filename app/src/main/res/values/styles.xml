@@ -17,6 +17,12 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="settings_header">
+        <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/settings_headers</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

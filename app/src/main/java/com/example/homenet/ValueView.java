@@ -17,6 +17,8 @@ import com.example.homenet.weathersens.WSValueserver;
 
 public class ValueView extends ConstraintLayout {
 
+
+
     private TextView tv_desc_bigValue;
     private TextView tv_bigValue;
     private TextView tv_desc_smValue1;
@@ -72,6 +74,13 @@ public class ValueView extends ConstraintLayout {
         tv_smValue1 = findViewById(R.id.sValue1);
         tv_desc_smValue2 = findViewById(R.id.desc_sValue2);
         tv_smValue2 = findViewById(R.id.sValue2);
+
+        this.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openChooseDialog();
+            }
+        });
     }
 
     public void initialize(int id, String ip, int port){
@@ -111,20 +120,18 @@ public class ValueView extends ConstraintLayout {
 
     }
 
-    @Override
+    /*@Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        System.out.println("Event!");
-        openChooseDialog();
+        if (event.getAction() != MotionEvent.ACTION_MOVE)
+        {
+            System.out.println("Event!");
+            openChooseDialog();
+            return super.dispatchTouchEvent(event);
+        }
         return super.dispatchTouchEvent(event);
-    }
+    }*/
 
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        System.out.println("Event!");
-        openChooseDialog();
-        return super.dispatchKeyEvent(event);
-    }
 
     public void openChooseDialog(){
         System.out.println("Opening Choose dialog!");

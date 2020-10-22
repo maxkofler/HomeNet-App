@@ -2,6 +2,7 @@ package com.example.homenet;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,12 +17,16 @@ import com.example.homenet.ExceptionClasses.NoConnectionToWSServer;
 import com.example.homenet.R;
 import com.example.homenet.weathersens.WSValueserver;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class ConfigureValueDisplay extends AppCompatActivity {
 
     Spinner spBigV;
     Spinner spSV1;
     Spinner spSV2;
     int ID = 0;
+
+    boolean changes = false;
 
     private SharedPreferences preferences;
     private SharedPreferences.Editor prefseditor;
@@ -71,7 +76,23 @@ public class ConfigureValueDisplay extends AppCompatActivity {
         spBigV.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                changes = true;
                 prefseditor.putInt("bigVID", position);
+                prefseditor.commit();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spSV1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                changes = true;
+                prefseditor.putInt("sV1ID", position);
                 prefseditor.commit();
             }
 
@@ -80,5 +101,41 @@ public class ConfigureValueDisplay extends AppCompatActivity {
 
             }
         });
+
+        spSV2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                changes = true;
+                prefseditor.putInt("sV2ID", position);
+                prefseditor.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        changes = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (changes){
+            triggerRebirth(getApplicationContext());
+        }
+        finish();
+    }
+
+    public static void triggerRebirth(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+        //intent.putExtra(KEY_RESTART_INTENT, nextIntent);
+        context.startActivity(intent);
+        if (context instanceof Activity) {
+            ((Activity) context).finish();
+        }
+
+        Runtime.getRuntime().exit(0);
     }
 }

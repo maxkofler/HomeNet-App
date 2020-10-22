@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        preferences = this.getActivity().getSharedPreferences("hnSettings", Context.MODE_PRIVATE);
+        preferences = this.getActivity().getSharedPreferences(getString(R.string.key_hnSavesFile), Context.MODE_PRIVATE);
         prefseditor = preferences.edit();
 
         ip = preferences.getString(getString(R.string.key_ServerIP), "192.168.1.24");
@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
 
 
         ll = root.findViewById(R.id.ll_values);
-        int countViews = 2;
+        int countViews = preferences.getInt(getString(R.string.key_countTiles), 2);
 
         ValueView[] vs = new ValueView[countViews];
 
