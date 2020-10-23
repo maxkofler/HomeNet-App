@@ -12,6 +12,60 @@
     <string name="menu_slideshow">Slideshow</string>
 
 
-    <string name="def_bigValue">25°C</string>
+    <string name="def_bigValue">10 °C</string>
     <string name="def_desc_bigValue">Temperatur</string>
+
+    <string name="def_sValue1">10 °C</string>
+    <string name="def_desc_sValue1">Minimale Temperatur</string>
+
+    <string name="def_sValue2">10 %</string>
+    <string name="def_desc_sValue2"></string>
+
+    <string name="cVD_bigVID">ID des großen Werts:</string>
+    <string name="cVD_sV1ID">ID des 1. kleinen Werts:</string>
+    <string name="cVD_sV2ID">ID des 2. kleinen Werts:</string>
+
+    //Informations
+
+    <string name="pls_restart">Bitte App neu starten um Änderungen zu übernehmen!</string>
+    <string name="opt_restart">Eventuell App neu starten!</string>
+
+    //Error Messages
+
+    <string name="err_no_connection_to_server">Keine Verbindung zum Server!</string>
+
+
+    //Preferences keys
+
+    <string name="key_hnSavesFile">hnSettings</string>
+
+    <string name="key_ServerIP">serverIP</string>
+    <string name="key_ServerPort">serverPort</string>
+
+    <string name="key_countTiles">countTiles</string>
+
+    //Titles
+
+    <string name="title_settings">Einstellungen</string>
+
+    //Settings
+
+        //Server settings
+        <string name="server_settings">Server-Einstellungen</string>
+    
+        <string name="server_ip">IP-Adresse:</string>
+        <string name="server_port">Port:</string>
+
+        //Home fragment appearance settings
+        <string name="home_settings">Startbildschirm-Einstellungen</string>
+
+        <string name="count_tiles">Anzahl Widgets:</string>
+
+        //Exit prompt
+        <string name="s_exit_title">Speichern?</string>
+        <string name="s_exit_text">Sollen die änderungen gespeichert werden?</string>
+
+        <string name="s_exit_yes">Ja</string>
+        <string name="s_exit_no">Nein</string>
+
 </resources>
