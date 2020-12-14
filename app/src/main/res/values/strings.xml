@@ -5,7 +5,7 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Einstellungen</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
@@ -47,25 +47,27 @@
     //Titles
 
     <string name="title_settings">Einstellungen</string>
+    <string name="title_confVDisplay">Widget-Einstellungen</string>
+    <string name="title_history">Rückblick</string>
 
     //Settings
 
-        //Server settings
-        <string name="server_settings">Server-Einstellungen</string>
-    
-        <string name="server_ip">IP-Adresse:</string>
-        <string name="server_port">Port:</string>
+    //Server settings
+    <string name="server_settings">Server-Einstellungen</string>
 
-        //Home fragment appearance settings
-        <string name="home_settings">Startbildschirm-Einstellungen</string>
+    <string name="server_ip">IP-Adresse:</string>
+    <string name="server_port">Port:</string>
 
-        <string name="count_tiles">Anzahl Widgets:</string>
+    //Home fragment appearance settings
+    <string name="home_settings">Startbildschirm-Einstellungen</string>
 
-        //Exit prompt
-        <string name="s_exit_title">Speichern?</string>
-        <string name="s_exit_text">Sollen die änderungen gespeichert werden?</string>
+    <string name="count_tiles">Anzahl Widgets:</string>
 
-        <string name="s_exit_yes">Ja</string>
-        <string name="s_exit_no">Nein</string>
+    //Exit prompt
+    <string name="s_exit_title">Speichern?</string>
+    <string name="s_exit_text">Sollen die änderungen gespeichert werden?</string>
+
+    <string name="s_exit_yes">Ja</string>
+    <string name="s_exit_no">Nein</string>
 
 </resources>

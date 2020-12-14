@@ -104,7 +104,7 @@ public class HNNetworking {
         }
     }
 
-    public class Value{
+    public class Value {
         public String dName;
         public int dID;
         public String vName;
@@ -117,7 +117,7 @@ public class HNNetworking {
 
         int lastPos = 0;
 
-        public void fetchFromTransmissionLine(String line){
+        public void fetchFromTransmissionLine(String line) {
             lastPos = -1;
             dName = fetchArg(line);
             dID = Integer.parseInt(fetchArg(line));
@@ -129,7 +129,7 @@ public class HNNetworking {
             vDataType = fetchArg(line);
         }
 
-        public void logContents(){
+        public void logContents() {
             System.out.println("----------Value Overview----------");
             System.out.println("dName: " + dName);
             System.out.println("dID: " + dID);
@@ -142,97 +142,22 @@ public class HNNetworking {
             System.out.println("vDataType: " + vDataType);
         }
 
-        private String fetchArg(String line){
+        private String fetchArg(String line) {
             int begPos = line.indexOf("<", lastPos);
             int endPos = line.indexOf(">", begPos);
             lastPos = endPos;
             StringBuilder sb = new StringBuilder();
-            for (int i = begPos + 1; i < endPos; i++){
+            for (int i = begPos + 1; i < endPos; i++) {
                 sb.append(line.charAt(i));
             }
             return sb.toString();
         }
     }
 
-    private class NetworkHandler implements Runnable{
-
-        private String ip;
-        private int port;
-
-        private String outMsg;
-        private volatile String inMsg;
-
-        boolean output;
-
-        NetworkHandler(String ip_, int port_, String msg_, boolean writeOutput){
-            this.ip = ip_;
-            this.port = port_;
-            this.outMsg = msg_;
-            this.output = writeOutput;
-        }
-
-        String getMsg(){
-            return this.inMsg;
-        }
-
-        @Override
-        public void run() {
-
-            try{
-                Socket sock = new Socket();
-                sock.connect(new InetSocketAddress(ip, port), 1000);
-                InputStream in = sock.getInputStream();
-                OutputStreamWriter out  = new OutputStreamWriter(sock.getOutputStream());
-                InputStreamReader reader = new InputStreamReader(in);
-
-                StringBuilder data = new StringBuilder();
-                out.write(outMsg);
-                out.flush();
-
-                int its = 0;
-                while (its < 1000){
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    its ++;
-                    if (in.available() > 1){
-                        break;
-                    }
-                }
-
-                if(output){
-                    System.out.println("Waited for " + its + "ms");
-                }
-
-
-                boolean end = false;
-                while (!end){
-                    int read = reader.read();
-                    if (read != -1){
-                        data.append(Character.toChars(read));
-                    }
-                    else{
-                        end = true;
-                    }
-                }
-
-                inMsg = data.toString();
-
-            } catch (UnknownHostException e) {
-                System.err.println("Unknown host!");
-                e.printStackTrace();
-            } catch (IOException e) {
-                System.err.println("IOException!");
-                e.printStackTrace();
-            }
-
-        }
-    }
-
     public int getValuesCount(){return valuesCount;}
     public Value getValueInstance(int id){return values[id];}
 }
+
+
 
 

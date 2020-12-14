@@ -76,13 +76,27 @@ public class ValueView extends ConstraintLayout {
         tv_desc_smValue2 = findViewById(R.id.desc_sValue2);
         tv_smValue2 = findViewById(R.id.sValue2);
 
-        this.setOnClickListener(new OnClickListener() {
+        tv_bigValue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //openChooseDialog();
-                Toast.makeText(context, "Opening History!", Toast.LENGTH_LONG).show();
+                openHistory(bigVID);
             }
         });
+
+        tv_smValue1.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openHistory(sV1ID);
+            }
+        });
+
+        tv_smValue2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openHistory(sV2ID);
+            }
+        });
+
 
         this.setOnLongClickListener(new OnLongClickListener() {
             @Override
@@ -149,6 +163,15 @@ public class ValueView extends ConstraintLayout {
         intent.putExtra("ip", ip);
         intent.putExtra("port", port);
         intent.putExtra("ID", ID);
+        context.startActivity(intent);
+    }
+
+    public void openHistory(int id){
+        System.out.println("Opening History!");
+        Intent intent = new Intent(getContext(), History.class);
+        intent.putExtra("ip", ip);
+        intent.putExtra("port", port);
+        intent.putExtra("ID", id);
         context.startActivity(intent);
     }
 }

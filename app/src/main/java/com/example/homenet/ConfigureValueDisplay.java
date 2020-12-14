@@ -35,6 +35,7 @@ public class ConfigureValueDisplay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configure_value_display);
+        getSupportActionBar().setTitle(getString(R.string.title_confVDisplay));
 
         spBigV = findViewById(R.id.sp_bigID);
         spSV1 = findViewById(R.id.sp_sID1);
