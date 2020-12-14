@@ -17,13 +17,13 @@ public class WSValueserver {
         net.setConf(ip, port);
     }
 
-    public void init() throws NoConnectionToWSServer {
-        syncAll();
+    public void init(boolean writeOutput) throws NoConnectionToWSServer {
+        syncAll(writeOutput);
     }
 
-    void syncAll() throws NoConnectionToWSServer {
+    void syncAll(boolean writeOutput) throws NoConnectionToWSServer {
         try {
-            net.syncAll();
+            net.syncAll(writeOutput);
             valuesCount = net.getValuesCount();
             values = new HNNetworking.Value[valuesCount];
             for (int i = 0; i < valuesCount; i++) {

@@ -50,14 +50,6 @@ public class Settings extends AppCompatActivity {
         prefseditor.putInt(getString(R.string.key_ServerPort), Integer.parseInt(et_server_port.getText().toString()));
         prefseditor.putInt(getString(R.string.key_countTiles), Integer.parseInt(et_cTiles.getText().toString()));
         prefseditor.commit();
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), getString(R.string.opt_restart), Toast.LENGTH_LONG).show();
-                triggerRebirth(getApplicationContext());
-            }
-        });
     }
 
     public static void triggerRebirth(Context context) {

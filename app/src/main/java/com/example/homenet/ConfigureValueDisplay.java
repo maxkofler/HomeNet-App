@@ -46,7 +46,7 @@ public class ConfigureValueDisplay extends AppCompatActivity {
 
         WSValueserver vServer = new WSValueserver(intent.getStringExtra("ip"), intent.getIntExtra("port", 8090));
         try {
-            vServer.init();
+            vServer.init(false);
         } catch (NoConnectionToWSServer noConnectionToWSServer) {
             Toast.makeText(getApplicationContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
         }
@@ -122,7 +122,7 @@ public class ConfigureValueDisplay extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         if (changes){
-            triggerRebirth(getApplicationContext());
+            //triggerRebirth(getApplicationContext());
         }
         finish();
     }

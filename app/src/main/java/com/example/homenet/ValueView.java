@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -62,7 +63,7 @@ public class ValueView extends ConstraintLayout {
         init(context);
     }
 
-    private void init(Context context){
+    private void init(final Context context){
         this.context = context;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -78,7 +79,16 @@ public class ValueView extends ConstraintLayout {
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //openChooseDialog();
+                Toast.makeText(context, "Opening History!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        this.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
                 openChooseDialog();
+                return false;
             }
         });
     }

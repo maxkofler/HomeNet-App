@@ -29,8 +29,8 @@ public class HNNetworking {
 
     public boolean getError(){return criticalError;}
 
-    public void syncAll() throws NoConnectionToWSServer {
-        NetworkHandler net = new NetworkHandler(ip, port, "@va");
+    public void syncAll(boolean writeOutput) throws NoConnectionToWSServer {
+        NetworkHandler net = new NetworkHandler(ip, port, "@va", writeOutput);
         Thread netThread = new Thread(net);
         netThread.start();
         String recMsg = null;
@@ -48,7 +48,7 @@ public class HNNetworking {
             e.printStackTrace();
         }
 
-        fetchValues(recMsg);
+        fetchValues(recMsg, writeOutput);
 
     }
 
@@ -57,7 +57,7 @@ public class HNNetworking {
         this.port = port;
     }
 
-    private void fetchValues(String msg){
+    private void fetchValues(String msg, boolean output){
         BufferedReader sr = new BufferedReader(new StringReader(msg));
         boolean end = false;
         int lines = 0;
@@ -95,7 +95,9 @@ public class HNNetworking {
                 values[i] = new Value();
                 values[i].fetchFromTransmissionLine(curLine);
                 values[i].gvID = i;
-                values[i].logContents();
+                if (output){
+                    values[i].logContents();
+                }
             }else{
                 break;
             }
@@ -160,10 +162,13 @@ public class HNNetworking {
         private String outMsg;
         private volatile String inMsg;
 
-        NetworkHandler(String ip_, int port_, String msg_){
+        boolean output;
+
+        NetworkHandler(String ip_, int port_, String msg_, boolean writeOutput){
             this.ip = ip_;
             this.port = port_;
             this.outMsg = msg_;
+            this.output = writeOutput;
         }
 
         String getMsg(){
@@ -196,7 +201,11 @@ public class HNNetworking {
                         break;
                     }
                 }
-                System.out.println("Waited for " + its + "ms");
+
+                if(output){
+                    System.out.println("Waited for " + its + "ms");
+                }
+
 
                 boolean end = false;
                 while (!end){
