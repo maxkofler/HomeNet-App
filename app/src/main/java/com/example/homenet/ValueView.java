@@ -69,17 +69,24 @@ public class ValueView extends ConstraintLayout {
 
         inflater.inflate(R.layout.layout_valueview, this);
 
-        tv_desc_bigValue = findViewById(R.id.desc_bigValue);
-        tv_bigValue = findViewById(R.id.bigValue);
-        tv_desc_smValue1 = findViewById(R.id.desc_sValue1);
-        tv_smValue1 = findViewById(R.id.sValue1);
-        tv_desc_smValue2 = findViewById(R.id.desc_sValue2);
-        tv_smValue2 = findViewById(R.id.sValue2);
+        tv_desc_bigValue = (TextView)findViewById(R.id.desc_bigValue);
+        tv_bigValue = (TextView)findViewById(R.id.bigValue);
+        tv_desc_smValue1 = (TextView)findViewById(R.id.desc_sValue1);
+        tv_smValue1 = (TextView)findViewById(R.id.sValue1);
+        tv_desc_smValue2 = (TextView)findViewById(R.id.desc_sValue2);
+        tv_smValue2 = (TextView)findViewById(R.id.sValue2);
 
         tv_bigValue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 openHistory(bigVID);
+            }
+        });
+        tv_bigValue.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                openChooseDialog();
+                return false;
             }
         });
 
@@ -89,11 +96,25 @@ public class ValueView extends ConstraintLayout {
                 openHistory(sV1ID);
             }
         });
+        tv_smValue1.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                openChooseDialog();
+                return false;
+            }
+        });
 
         tv_smValue2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 openHistory(sV2ID);
+            }
+        });
+        tv_smValue2.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                openChooseDialog();
+                return false;
             }
         });
 

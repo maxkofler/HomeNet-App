@@ -1,9 +1,12 @@
 package com.example.homenet.ui.home;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.tv.TvInputService;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +57,9 @@ public class HomeFragment extends Fragment {
     WSValueserver vServer;
 
     boolean connectedToServer = false;
+    SwipeRefreshLayout swipeRefresh;
+    ProgressDialog dialog;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +68,25 @@ public class HomeFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_home, container, false);
 
 
+        swipeRefresh = root.findViewById(R.id.swipeRefresh);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefresh.setRefreshing(false);
+                refresh(false, false);
+            }
+        });
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dialog=new ProgressDialog(getContext());
+                dialog.setMessage("Lade...");
+                dialog.setCancelable(false);
+                dialog.setInverseBackgroundForced(false);
+                dialog.show();
+            }
+        });
 
         return root;
     }
@@ -70,34 +95,82 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        connectedToServer = false;
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refresh(true, false);
+                dialog.hide();
+            }
+        }, 100);
 
-        preferences = this.getActivity().getSharedPreferences(getString(R.string.key_hnSavesFile), Context.MODE_PRIVATE);
-        prefseditor = preferences.edit();
+    }
 
-        ip = preferences.getString(getString(R.string.key_ServerIP), "192.168.1.24");
-        port = preferences.getInt(getString(R.string.key_ServerPort), 8090);
+    private void refresh(boolean waitForEnd, final boolean showLoading){
 
-        vServer = new WSValueserver(ip, port);
-        try{
-            vServer.init(false);
-            connectedToServer = true;
-        }catch (NoConnectionToWSServer e){
-            Toast.makeText(getContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
+        class RefreshClass implements Runnable{
+            @Override
+            public void run() {
+                if (showLoading){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dialog.show();
+                        }
+                    });
+                }
+
+                connectedToServer = false;
+
+                preferences = getActivity().getSharedPreferences(getString(R.string.key_hnSavesFile), Context.MODE_PRIVATE);
+                prefseditor = preferences.edit();
+
+                ip = preferences.getString(getString(R.string.key_ServerIP), "192.168.1.24");
+                port = preferences.getInt(getString(R.string.key_ServerPort), 8090);
+
+                vServer = new WSValueserver(ip, port);
+                try{
+                    vServer.init(false);
+                    connectedToServer = true;
+                }catch (NoConnectionToWSServer e){
+                    Toast.makeText(getContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
+                }
+
+                if (connectedToServer){
+
+                    ll = root.findViewById(R.id.ll_values);
+
+                    //Variable to check how many widgets there are to create
+                    final int countViews = preferences.getInt(getString(R.string.key_countTiles), 2);
+
+                    loadWidgets(countViews);
+
+
+                    widgets = countViews;
+                }
+                if (showLoading){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dialog.hide();
+                        }
+                    });
+                }
+            }
+
         }
 
-        if (connectedToServer){
-            ll = root.findViewById(R.id.ll_values);
-
-            //Variable to check how many widgets there are to create
-            int countViews = preferences.getInt(getString(R.string.key_countTiles), 2);
-
-            loadWidgets(countViews);
-
-            widgets = countViews;
-
-
+        Thread refreshThread = new Thread(new RefreshClass());
+        refreshThread.start();
+        if (waitForEnd)
+        {
+            try {
+                refreshThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     private void loadWidgets(int countViews){
@@ -120,13 +193,27 @@ public class HomeFragment extends Fragment {
                     vs[i] = new ValueView(getContext());
                     vs[i].initialize(i, ip, port);
                     vs[i].setValues(vServer);
-                    ll.addView(vs[i]);
+                    final int ix = i;
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ll.addView(vs[ix]);
+                        }
+                    });
+
                 }
             }else{
                 System.out.println("Refreshing old widgets!");
                 for (int i = 0; i < countViews; i++){
                     vs[i].initialize(i, ip, port);
-                    vs[i].setValues(vServer);
+                    final int ii = i;
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            vs[ii].setValues(vServer);
+                        }
+                    });
+
                 }
             }
         }

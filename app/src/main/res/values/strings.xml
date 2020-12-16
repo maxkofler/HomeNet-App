@@ -33,6 +33,9 @@
     //Error Messages
 
     <string name="err_no_connection_to_server">Keine Verbindung zum Server!</string>
+    <string name="err_conversion_not_possible">Wert kann nicht dargestellt werden!</string>
+
+    <string name="err_recString_not_readable">Werte können nicht gelesen werden! (Korrupt)</string>
 
 
     //Preferences keys
@@ -43,6 +46,8 @@
     <string name="key_ServerPort">serverPort</string>
 
     <string name="key_countTiles">countTiles</string>
+
+    <string name="key_countValuesHistory">countHistoryValues</string>
 
     //Titles
 
@@ -62,6 +67,10 @@
     <string name="home_settings">Startbildschirm-Einstellungen</string>
 
     <string name="count_tiles">Anzahl Widgets:</string>
+
+    //History settings
+    <string name="history_settings">Rückblick-Einstellungen</string>
+    <string name="count_valuesToDisplay">Anzahl Einträge:</string>
 
     //Exit prompt
     <string name="s_exit_title">Speichern?</string>

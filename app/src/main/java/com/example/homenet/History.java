@@ -2,10 +2,13 @@ package com.example.homenet;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +47,8 @@ public class History extends AppCompatActivity {
     private WSValueserver vServer;
     private boolean connectedToServer;
 
+    private ProgressDialog dialog;
+
     int id = 0;
 
     TextView tvName;
@@ -64,17 +69,32 @@ public class History extends AppCompatActivity {
         ip = preferences.getString(getString(R.string.key_ServerIP), "192.168.1.24");
         port = preferences.getInt(getString(R.string.key_ServerPort), 8090);
 
-        vServer = new WSValueserver(ip, port);
+        dialog=new ProgressDialog(History.this);
+        dialog.setMessage("Lade...");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+        dialog.show();
 
-        try{
-            vServer.init(false);
-            connectedToServer = true;
-        }catch (NoConnectionToWSServer e){
-            Toast.makeText(getApplicationContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
-        }
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
-        tvName = findViewById(R.id.tvValueName);
-        setChart(id);
+                vServer = new WSValueserver(ip, port);
+
+                try{
+                    vServer.init(false);
+                    connectedToServer = true;
+                }catch (NoConnectionToWSServer e){
+                    Toast.makeText(getApplicationContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
+                }
+
+                tvName = findViewById(R.id.tvValueName);
+                setChart(id);
+                dialog.hide();
+            }
+        }, 100);
+
     }
 
 
@@ -88,7 +108,6 @@ public class History extends AppCompatActivity {
     }
 
     private void setChart(final int id){
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -96,8 +115,11 @@ public class History extends AppCompatActivity {
 
                 System.out.println("ID: " + id);
 
-                History_Manager hManager = new History_Manager(ip, port, id);
-                History_Manager.History_entry[] history_entries = hManager.getHistory_entries();
+                History_Manager hManager = new History_Manager(ip, port, id, getApplicationContext());
+                History_Manager.History_entry[] history_entries = hManager.smoothcourve(hManager.getHistory_entries(), preferences.getInt(getString(R.string.key_countValuesHistory), 100));
+                if (history_entries == null){
+                    return;
+                }
 
                 AnyChartView anyChartView = findViewById(R.id.any_chart_view);
                 anyChartView.setZoomEnabled(true);
@@ -107,24 +129,39 @@ public class History extends AppCompatActivity {
 
                 cartesian.animation(true);
 
-                cartesian.crosshair().enabled(true);
-                cartesian.crosshair()
-                        .yLabel(true)
-                        // TODO ystroke
-                        .yStroke((Stroke) null, null, null, (String) null, (String) null);
-
 
                 //cartesian.yAxis(0).title("Number of Bottles Sold (thousands)");
                 //cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
 
                 List<DataEntry> seriesData = new ArrayList<>();
-                int time;
+                String time;
                 String value;
+                String type;
+                float valueF;
+
+                type = history_entries[history_entries.length-1].getType();
+                if (type == "int" && type == "float"){
+
+                }else{
+                    System.out.println("Type is not int or float, trying anyway to convert...");
+                }
 
                 for (int i = 0; i < history_entries.length; i++){
-                    time = history_entries[i].getTime();
+                    time = history_entries[i].getTimeStamp();
                     value = history_entries[i].getValue();
-                    seriesData.add(new CustomDataEntry(Integer.toString(time), Float.parseFloat(value)));
+                    try{
+                        valueF = Float.parseFloat(value);
+                    }catch(NumberFormatException e){
+                        System.out.println("Conversion failed! Breaking...");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), getString(R.string.err_conversion_not_possible), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        break;
+                    }
+                    seriesData.add(new CustomDataEntry(time, valueF));
                 }
 
 
@@ -138,8 +175,7 @@ public class History extends AppCompatActivity {
 
 
                 cartesian.legend().enabled(true);
-                cartesian.legend().fontSize(13d);
-                cartesian.legend().padding(0d, 0d, 0d, 0d);
+                cartesian.legend().fontSize(10d);
 
                 anyChartView.setChart(cartesian);
                 anyChartView.invalidate();
