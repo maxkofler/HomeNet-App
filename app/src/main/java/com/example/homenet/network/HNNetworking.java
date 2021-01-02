@@ -1,6 +1,7 @@
 package com.example.homenet.network;
 
 import android.icu.text.MessagePattern;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.homenet.ExceptionClasses.NoConnectionToWSServer;
@@ -89,15 +90,21 @@ public class HNNetworking {
                 curLine = sr.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
+                break;
             }
 
             if (curLine != null){
                 values[i] = new Value();
-                values[i].fetchFromTransmissionLine(curLine);
-                values[i].gvID = i;
-                if (output){
-                    values[i].logContents();
+                if(values[i].fetchFromTransmissionLine(curLine))
+                {
+                    values[i].gvID = i;
+                    if (output){
+                        values[i].logContents();
+                    }
+                }else{
+                    i--;
                 }
+
             }else{
                 break;
             }
@@ -117,16 +124,22 @@ public class HNNetworking {
 
         int lastPos = 0;
 
-        public void fetchFromTransmissionLine(String line) {
-            lastPos = -1;
-            dName = fetchArg(line);
-            dID = Integer.parseInt(fetchArg(line));
-            vName = fetchArg(line);
-            vUnit = fetchArg(line);
-            vType = fetchArg(line);
-            vID = Integer.parseInt(fetchArg(line));
-            value = fetchArg(line);
-            vDataType = fetchArg(line);
+        public boolean fetchFromTransmissionLine(String line) {
+            try{
+                lastPos = -1;
+                dName = fetchArg(line);
+                dID = Integer.parseInt(fetchArg(line));
+                vName = fetchArg(line);
+                vUnit = fetchArg(line);
+                vType = fetchArg(line);
+                vID = Integer.parseInt(fetchArg(line));
+                value = fetchArg(line);
+                vDataType = fetchArg(line);
+                return true;
+            }catch (NumberFormatException e){
+                //Log.e("homenet-fetchFromTransmissionLine()", "Error in fetching transmission line: " + line);
+                return false;
+            }
         }
 
         public void logContents() {
@@ -143,6 +156,10 @@ public class HNNetworking {
         }
 
         private String fetchArg(String line) {
+            if (line == "" || line == null){
+                Log.e("homenet-fetchArg()", "Error in fetching argunemt: \"" + line + "\"");
+                return null;
+            }
             int begPos = line.indexOf("<", lastPos);
             int endPos = line.indexOf(">", begPos);
             lastPos = endPos;

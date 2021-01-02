@@ -35,7 +35,8 @@
     <string name="err_no_connection_to_server">Keine Verbindung zum Server!</string>
     <string name="err_conversion_not_possible">Wert kann nicht dargestellt werden!</string>
 
-    <string name="err_recString_not_readable">Werte können nicht gelesen werden! (Korrupt)</string>
+    <string name="err_recString_not_readable">Einige Einträge konnten nicht gelesen werden! (Korrupt)</string>
+    <string name="err_recString_not_smoothable">Werte konnten nicht für Darstellung geglättet werden!</string>
 
 
     //Preferences keys
@@ -48,6 +49,7 @@
     <string name="key_countTiles">countTiles</string>
 
     <string name="key_countValuesHistory">countHistoryValues</string>
+    <string name="key_historyLookBackSec">historyLookBackSec</string>
 
     //Titles
 
@@ -71,6 +73,8 @@
     //History settings
     <string name="history_settings">Rückblick-Einstellungen</string>
     <string name="count_valuesToDisplay">Anzahl Einträge:</string>
+
+    <string name="count_secLookBack">Rückblickzeit in h:</string>
 
     //Exit prompt
     <string name="s_exit_title">Speichern?</string>

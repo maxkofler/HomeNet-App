@@ -26,6 +26,7 @@ public class Settings extends AppCompatActivity {
     EditText et_server_port;
     EditText et_cTiles;
     EditText et_cValues;
+    EditText et_cSecLookBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class Settings extends AppCompatActivity {
         et_server_port = findViewById(R.id.et_s_port);
         et_cTiles = findViewById(R.id.et_cTiles);
         et_cValues = findViewById(R.id.et_cValues);
+        et_cSecLookBack = findViewById(R.id.et_cSecLookBack);
 
         loadChanges();
 
@@ -52,6 +54,7 @@ public class Settings extends AppCompatActivity {
         prefseditor.putInt(getString(R.string.key_ServerPort), Integer.parseInt(et_server_port.getText().toString()));
         prefseditor.putInt(getString(R.string.key_countTiles), Integer.parseInt(et_cTiles.getText().toString()));
         prefseditor.putInt(getString(R.string.key_countValuesHistory), Integer.parseInt(et_cValues.getText().toString()));
+        prefseditor.putInt(getString(R.string.key_historyLookBackSec), Integer.parseInt(et_cSecLookBack.getText().toString())*3600);
         prefseditor.commit();
     }
 
@@ -72,6 +75,7 @@ public class Settings extends AppCompatActivity {
         et_server_port.setText(Integer.toString(preferences.getInt(getString(R.string.key_ServerPort), 8090)));
         et_cTiles.setText(Integer.toString(preferences.getInt(getString(R.string.key_countTiles), 2)));
         et_cValues.setText(Integer.toString(preferences.getInt(getString(R.string.key_countValuesHistory), 100)));
+        et_cSecLookBack.setText(Integer.toString(preferences.getInt(getString(R.string.key_historyLookBackSec), 48*3600)/3600));
     }
 
     @Override

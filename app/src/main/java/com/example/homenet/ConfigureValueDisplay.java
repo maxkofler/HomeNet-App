@@ -46,16 +46,18 @@ public class ConfigureValueDisplay extends AppCompatActivity {
         ID = intent.getIntExtra("ID", 0);
 
         WSValueserver vServer = new WSValueserver(intent.getStringExtra("ip"), intent.getIntExtra("port", 8090));
-        try {
-            vServer.init(false);
-        } catch (NoConnectionToWSServer noConnectionToWSServer) {
+        if (!vServer.init(false)){
             Toast.makeText(getApplicationContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
+            return;
         }
+
 
         String[] valueNames = new String[vServer.getValuesCount()];
         for (int i = 0; i < vServer.getValuesCount(); i++){
             valueNames[i] = vServer.getValueName(i);
         }
+
+        vServer.closeNet();
 
         preferences = getSharedPreferences("valueView" + ID, Context.MODE_PRIVATE);
         prefseditor = preferences.edit();

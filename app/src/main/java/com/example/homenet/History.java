@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -44,14 +45,18 @@ public class History extends AppCompatActivity {
 
     private String ip = "192.168.1.24";
     private int port = 8090;
-    private WSValueserver vServer;
-    private boolean connectedToServer;
 
     private ProgressDialog dialog;
 
     int id = 0;
 
     TextView tvName;
+
+    private String name;
+    private String unit;
+
+    private History_Manager.History_entry history_entries[];
+    List<DataEntry> seriesData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,8 @@ public class History extends AppCompatActivity {
         prefseditor = preferences.edit();
 
         id = intent.getIntExtra("ID", 0);
+        name = intent.getStringExtra("name");
+        unit = intent.getStringExtra("unit");
 
         ip = preferences.getString(getString(R.string.key_ServerIP), "192.168.1.24");
         port = preferences.getInt(getString(R.string.key_ServerPort), 8090);
@@ -79,16 +86,6 @@ public class History extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                vServer = new WSValueserver(ip, port);
-
-                try{
-                    vServer.init(false);
-                    connectedToServer = true;
-                }catch (NoConnectionToWSServer e){
-                    Toast.makeText(getApplicationContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
-                }
-
                 tvName = findViewById(R.id.tvValueName);
                 setChart(id);
                 dialog.hide();
@@ -108,32 +105,26 @@ public class History extends AppCompatActivity {
     }
 
     private void setChart(final int id){
-        runOnUiThread(new Runnable() {
+
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                tvName.setText(vServer.getValueName(id));
+                int countHistoryValues = preferences.getInt(getString(R.string.key_countValuesHistory), 100);
+                int countSecLookBack = preferences.getInt(getString(R.string.key_historyLookBackSec), 24*3600);
+                History_Manager hManager = new History_Manager(ip, port, id, countSecLookBack, getApplicationContext());
 
-                System.out.println("ID: " + id);
-
-                History_Manager hManager = new History_Manager(ip, port, id, getApplicationContext());
-                History_Manager.History_entry[] history_entries = hManager.smoothcourve(hManager.getHistory_entries(), preferences.getInt(getString(R.string.key_countValuesHistory), 100));
+                history_entries = hManager.getHistory_entries();
+                history_entries = hManager.stripInvalidEntries(history_entries);
+                history_entries = hManager.cutToLookbackWindow(history_entries, countSecLookBack, countHistoryValues);
+                history_entries = hManager.smoothcurve(history_entries, countHistoryValues);
                 if (history_entries == null){
+                    Log.e("homenet", "History entries returned from HistoryManager.getHistory_entries() are NULL!");
+                    Toast.makeText(getApplicationContext(), getString(R.string.err_recString_not_smoothable), Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                AnyChartView anyChartView = findViewById(R.id.any_chart_view);
-                anyChartView.setZoomEnabled(true);
 
-                //anyChartView.clear();
-                Cartesian cartesian = AnyChart.line();
-
-                cartesian.animation(true);
-
-
-                //cartesian.yAxis(0).title("Number of Bottles Sold (thousands)");
-                //cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
-
-                List<DataEntry> seriesData = new ArrayList<>();
+                seriesData = new ArrayList<>();
                 String time;
                 String value;
                 String type;
@@ -163,6 +154,32 @@ public class History extends AppCompatActivity {
                     }
                     seriesData.add(new CustomDataEntry(time, valueF));
                 }
+            }
+        });
+        thread.start();
+        thread.setPriority(Thread.MAX_PRIORITY);
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvName.setText(name);
+
+                System.out.println("ID: " + id);
+
+                AnyChartView anyChartView = findViewById(R.id.any_chart_view);
+                anyChartView.setZoomEnabled(true);
+
+                //anyChartView.clear();
+                Cartesian cartesian = AnyChart.line();
+
+                cartesian.animation(false);
+
 
 
                 Set set = Set.instantiate();
@@ -171,7 +188,7 @@ public class History extends AppCompatActivity {
 
 
                 Line series1 = cartesian.line(series1Mapping);
-                series1.name(vServer.getValueName(id) + " in " + vServer.getValueUnit(id));
+                series1.name(name + " in " + unit);
 
 
                 cartesian.legend().enabled(true);

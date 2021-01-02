@@ -1,5 +1,7 @@
 package com.example.homenet.weathersens;
 
+import android.util.Log;
+
 import com.example.homenet.ExceptionClasses.NoConnectionToWSServer;
 import com.example.homenet.network.HNNetworking;
 
@@ -11,18 +13,37 @@ public class WSValueserver {
 
     private int valuesCount;
 
+    private String ip;
+    private int port;
+
 
     public WSValueserver(String ip, int port){
-        net = new HNNetworking();
-        net.setConf(ip, port);
+        this.ip = ip;
+        this.port = port;
     }
 
-    public void init(boolean writeOutput) throws NoConnectionToWSServer {
-        syncAll(writeOutput);
+    public boolean init(boolean writeOutput) {
+        try{
+            syncAll(writeOutput);
+            return true;
+        }catch (NoConnectionToWSServer e){
+            return false;
+        }
+
+    }
+
+    public void closeNet(){
+        net = null;
+        System.gc();
+        Log.i("homenet-closeNet()", "Removed network objects!");
     }
 
     void syncAll(boolean writeOutput) throws NoConnectionToWSServer {
         try {
+            if (net == null){
+                net = new HNNetworking();
+                net.setConf(ip, port);
+            }
             net.syncAll(writeOutput);
             valuesCount = net.getValuesCount();
             values = new HNNetworking.Value[valuesCount];

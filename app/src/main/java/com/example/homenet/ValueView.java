@@ -36,6 +36,14 @@ public class ValueView extends ConstraintLayout {
     private int sV1ID = 0;
     private int sV2ID = 0;
 
+    private String bigVName;
+    private String sV1Name;
+    private String sV2Name;
+
+    private String bigVUnit;
+    private String sV1Unit;
+    private String sV2Unit;
+
     String ip;
     int port;
 
@@ -79,7 +87,7 @@ public class ValueView extends ConstraintLayout {
         tv_bigValue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openHistory(bigVID);
+                openHistory(bigVID, bigVName, bigVUnit);
             }
         });
         tv_bigValue.setOnLongClickListener(new OnLongClickListener() {
@@ -93,7 +101,7 @@ public class ValueView extends ConstraintLayout {
         tv_smValue1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openHistory(sV1ID);
+                openHistory(sV1ID, sV1Name, sV1Unit);
             }
         });
         tv_smValue1.setOnLongClickListener(new OnLongClickListener() {
@@ -107,7 +115,7 @@ public class ValueView extends ConstraintLayout {
         tv_smValue2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openHistory(sV2ID);
+                openHistory(sV2ID, sV2Name, sV2Unit);
             }
         });
         tv_smValue2.setOnLongClickListener(new OnLongClickListener() {
@@ -151,6 +159,16 @@ public class ValueView extends ConstraintLayout {
 
     public void setValues(WSValueserver vServer){
         if (vServer.getDataAvailable()){
+
+            bigVName = vServer.getValueName(bigVID);
+            bigVUnit = vServer.getValueUnit(bigVID);
+
+            sV1Name = vServer.getValueName(sV1ID);
+            sV1Unit = vServer.getValueUnit(sV1ID);
+
+            sV2Name = vServer.getValueName(sV2ID);
+            sV2Unit = vServer.getValueUnit(sV2ID);
+
             setBigValueDesc(vServer.getValueName(bigVID));
             setBigValue(vServer.getValue(bigVID) + " " + vServer.getValueUnit(bigVID));
 
@@ -187,12 +205,14 @@ public class ValueView extends ConstraintLayout {
         context.startActivity(intent);
     }
 
-    public void openHistory(int id){
+    public void openHistory(int id, String name, String unit){
         System.out.println("Opening History!");
         Intent intent = new Intent(getContext(), History.class);
         intent.putExtra("ip", ip);
         intent.putExtra("port", port);
         intent.putExtra("ID", id);
+        intent.putExtra("name", name);
+        intent.putExtra("unit", unit);
         context.startActivity(intent);
     }
 }

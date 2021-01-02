@@ -172,6 +172,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/et_cValues" />
 
+
+            <TextView
+                android:id="@+id/tv_cSecLookBack"
+                style="@style/settings_descs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/count_secLookBack"
+                app:layout_constraintBottom_toBottomOf="@+id/et_cSecLookBack"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/et_cSecLookBack" />
+
             <EditText
                 android:id="@+id/et_cValues"
                 android:layout_width="100dp"
@@ -183,6 +195,19 @@
                 android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+            <EditText
+                android:id="@+id/et_cSecLookBack"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="48"
+                android:inputType="number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_cValues" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

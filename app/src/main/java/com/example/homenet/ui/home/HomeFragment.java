@@ -129,12 +129,7 @@ public class HomeFragment extends Fragment {
                 port = preferences.getInt(getString(R.string.key_ServerPort), 8090);
 
                 vServer = new WSValueserver(ip, port);
-                try{
-                    vServer.init(false);
-                    connectedToServer = true;
-                }catch (NoConnectionToWSServer e){
-                    Toast.makeText(getContext(), getString(R.string.err_no_connection_to_server), Toast.LENGTH_LONG).show();
-                }
+                connectedToServer = vServer.init(false);
 
                 if (connectedToServer){
 
@@ -148,6 +143,7 @@ public class HomeFragment extends Fragment {
 
                     widgets = countViews;
                 }
+                vServer.closeNet();
                 if (showLoading){
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -180,7 +176,7 @@ public class HomeFragment extends Fragment {
         //If there are a other ammount of widgets, force the user to restart the app
         if (countViews != widgets && widgets != 0){
             Toast.makeText(getContext(), getString(R.string.pls_restart), Toast.LENGTH_LONG).show();
-            System.exit(0);
+            //System.exit(0);
         }
         //If there are equal widgets, refresh them
         else{
