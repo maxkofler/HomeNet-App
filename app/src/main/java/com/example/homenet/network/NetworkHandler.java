@@ -10,6 +10,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
+import java.util.concurrent.TimeoutException;
 
 public class NetworkHandler implements Runnable{
 
@@ -19,15 +20,11 @@ public class NetworkHandler implements Runnable{
     private String outMsg;
     private static String inMsg;
 
-    boolean output;
 
-    Vector<String> inMsgV;
-
-    public NetworkHandler(String ip_, int port_, String msg_, boolean writeOutput){
+    public NetworkHandler(String ip_, int port_, String msg_){
         this.ip = ip_;
         this.port = port_;
         this.outMsg = msg_;
-        this.output = writeOutput;
     }
 
     public String getMsg(){
@@ -38,7 +35,7 @@ public class NetworkHandler implements Runnable{
     public void run() {
 
         try{
-            Log.i("homenet-NetworkHandler", "Opening TCP socket!");
+            Log.i("homenet-NetworkHandler", "Opening TCP socket (" + ip + ":" + port + ")");
             Socket sock = new Socket();
             sock.connect(new InetSocketAddress(ip, port), 1000);
             InputStream in = sock.getInputStream();
@@ -63,51 +60,29 @@ public class NetworkHandler implements Runnable{
                 }
             }
 
-            if(output){
-                System.out.println("Bytes currently available to read: " + in.available());
-                System.out.println("Waited for the mesage for " + its + "ms...");
-            }
-
+            Log.i("homenet-NetworkHandler", "Waited for response for " + its + " ms, bytes to read: " + in.available());
 
             boolean end = false;
-            inMsgV = new Vector<>();
             long bytesReceived = 0;
             int sCount = 1;
             int read;
             while (!end){
                 read = reader.read();
                 if (read != -1){
-                    data.append(Character.toChars(read));
-                    if (data.length() > 100000){
-                        inMsgV.add(data.toString());
-                        sCount++;
-                        bytesReceived += data.length();
-                        data = new StringBuilder();
-                    }
-                }
-                else{
-                    inMsgV.add(data.toString());
-                    bytesReceived += data.length();
+                    inMsg += read;
+                    bytesReceived += Character.toChars(read).length;
+                }else{
                     end = true;
                 }
             }
 
-            for (int i = 0; i < sCount; i++){
-                inMsg += inMsgV.elementAt(i);
-            }
-            inMsgV = null;
-            if (output){
-                Log.i("homenet", "Received " + sCount + " chunks of 100.000 B totalling to " + bytesReceived + "B!");
-            }
-
-
             sock.close();
             in.close();
             out.close();
-            Log.i("homenet-NetworkHandler", "Closed socket!");
+            Log.i("homenet-NetworkHandler", "Closed socket");
 
         } catch (UnknownHostException e) {
-            System.err.println("Unknown host!");
+            Log.e("homenet-NetworkHandler", "Host is unknown or not reachable!");
             e.printStackTrace();
         } catch (IOException e) {
             System.err.println("IOException!");

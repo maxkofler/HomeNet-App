@@ -61,7 +61,4 @@ public class WSValueserver {
     public String getValueUnit(int id) { return values[id].vUnit; }
     public String getValue(int id) { return values[id].value; }
     public int getValuesCount(){ return valuesCount; }
-
-
-
 }

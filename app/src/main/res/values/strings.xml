@@ -45,6 +45,7 @@
 
     <string name="key_ServerIP">serverIP</string>
     <string name="key_ServerPort">serverPort</string>
+    <string name="key_autorefresh">autorefresh</string>
 
     <string name="key_countTiles">countTiles</string>
 
@@ -64,6 +65,8 @@
 
     <string name="server_ip">IP-Adresse:</string>
     <string name="server_port">Port:</string>
+
+    <string name="autorefresh">Automatisch Aktualisieren (10 s)</string>
 
     //Home fragment appearance settings
     <string name="home_settings">Startbildschirm-Einstellungen</string>

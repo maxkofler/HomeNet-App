@@ -77,17 +77,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                dialog=new ProgressDialog(getContext());
-                dialog.setMessage("Lade...");
-                dialog.setCancelable(false);
-                dialog.setInverseBackgroundForced(false);
-                dialog.show();
-            }
-        });
-
         return root;
     }
 
@@ -100,7 +89,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void run() {
                 refresh(true, false);
-                dialog.hide();
             }
         }, 100);
 

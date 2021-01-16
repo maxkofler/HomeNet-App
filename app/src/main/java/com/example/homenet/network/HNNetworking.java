@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.homenet.ExceptionClasses.NoConnectionToWSServer;
+import com.example.homenet.ExceptionClasses.NoValuesToProcess;
 import com.example.homenet.R;
 
 import java.io.BufferedReader;
@@ -31,14 +32,14 @@ public class HNNetworking {
     public boolean getError(){return criticalError;}
 
     public void syncAll(boolean writeOutput) throws NoConnectionToWSServer {
-        NetworkHandler net = new NetworkHandler(ip, port, "@va", writeOutput);
+        NetworkHandler net = new NetworkHandler(ip, port, "@va");
         Thread netThread = new Thread(net);
         netThread.start();
         String recMsg = null;
         try {
-
             netThread.join();
             recMsg = net.getMsg();
+            fetchValues(recMsg, writeOutput);
             if (recMsg == null){
                 System.err.println("Fatal error: Server is not reachable!");
                 criticalError = true;
@@ -47,9 +48,12 @@ public class HNNetworking {
 
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (NoValuesToProcess e){
+            Log.wtf("homenet-syncAll", "Failed to parse string \"" + e.getMsg() + "\"!");
+            e.printStackTrace();
         }
 
-        fetchValues(recMsg, writeOutput);
+
 
     }
 
@@ -58,7 +62,11 @@ public class HNNetworking {
         this.port = port;
     }
 
-    private void fetchValues(String msg, boolean output){
+    private void fetchValues(String msg, boolean output) throws NoValuesToProcess{
+        if (msg == null || msg.isEmpty()){
+            throw new NoValuesToProcess(msg);
+        }
+
         BufferedReader sr = new BufferedReader(new StringReader(msg));
         boolean end = false;
         int lines = 0;
@@ -137,7 +145,6 @@ public class HNNetworking {
                 vDataType = fetchArg(line);
                 return true;
             }catch (NumberFormatException e){
-                //Log.e("homenet-fetchFromTransmissionLine()", "Error in fetching transmission line: " + line);
                 return false;
             }
         }

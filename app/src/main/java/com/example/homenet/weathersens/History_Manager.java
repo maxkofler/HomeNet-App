@@ -53,7 +53,7 @@ public class History_Manager {
 
         System.out.println("Starting net!");
 
-        net = new NetworkHandler(ip, port, "@vht"+ID+";"+lookback, true);
+        net = new NetworkHandler(ip, port, "@vht"+ID+";"+lookback);
         //net = new NetworkHandler(ip, port, "@vh"+ID, true);
         Thread netHandler = new Thread(net);
         netHandler.start();

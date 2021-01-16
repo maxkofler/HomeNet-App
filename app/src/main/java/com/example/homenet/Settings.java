@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.homenet.ui.home.HomeFragment;
@@ -28,6 +29,8 @@ public class Settings extends AppCompatActivity {
     EditText et_cValues;
     EditText et_cSecLookBack;
 
+    Switch sw_autorefresh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,8 @@ public class Settings extends AppCompatActivity {
         et_cValues = findViewById(R.id.et_cValues);
         et_cSecLookBack = findViewById(R.id.et_cSecLookBack);
 
+        sw_autorefresh = findViewById(R.id.sw_autorefresh);
+
         loadChanges();
 
     }
@@ -55,6 +60,8 @@ public class Settings extends AppCompatActivity {
         prefseditor.putInt(getString(R.string.key_countTiles), Integer.parseInt(et_cTiles.getText().toString()));
         prefseditor.putInt(getString(R.string.key_countValuesHistory), Integer.parseInt(et_cValues.getText().toString()));
         prefseditor.putInt(getString(R.string.key_historyLookBackSec), Integer.parseInt(et_cSecLookBack.getText().toString())*3600);
+
+        prefseditor.putBoolean(getString(R.string.key_autorefresh), sw_autorefresh.isChecked());
         prefseditor.commit();
     }
 
@@ -76,6 +83,8 @@ public class Settings extends AppCompatActivity {
         et_cTiles.setText(Integer.toString(preferences.getInt(getString(R.string.key_countTiles), 2)));
         et_cValues.setText(Integer.toString(preferences.getInt(getString(R.string.key_countValuesHistory), 100)));
         et_cSecLookBack.setText(Integer.toString(preferences.getInt(getString(R.string.key_historyLookBackSec), 48*3600)/3600));
+
+        sw_autorefresh.setChecked(preferences.getBoolean(getString(R.string.key_autorefresh), false));
     }
 
     @Override
