@@ -42,9 +42,9 @@ public class HNNetworking {
             fetchValues(recMsg, writeOutput);
             if (recMsg == null){
                 System.err.println("Fatal error: Server is not reachable!");
-                criticalError = true;
                 throw new NoConnectionToWSServer();
             }
+            Log.i("homenet-syncAll()", "Incoming msg:\n" + recMsg);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
