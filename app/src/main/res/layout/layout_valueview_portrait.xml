@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_home">
+
+    <TextView
+        android:id="@+id/bigValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/d_valuedisplay"
+        android:gravity="center_vertical|end"
+        android:paddingTop="20dp"
+        android:paddingEnd="5dp"
+        android:text="@string/def_bigValue"
+        android:textColor="#000000"
+        android:textSize="70sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/desc_bigValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:paddingStart="5dp"
+        android:text="@string/def_desc_bigValue"
+        android:textColor="#4CAF50"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/sValue1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+
+        android:background="@drawable/d_valuedisplay"
+        android:gravity="right"
+        android:paddingTop="15dp"
+        android:paddingEnd="5dp"
+        android:text="@string/def_sValue1"
+
+        android:textColor="#000000"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/sValue2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bigValue" />
+
+    <TextView
+        android:id="@+id/sValue2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/d_valuedisplay"
+
+        android:gravity="right"
+        android:paddingTop="15dp"
+        android:paddingEnd="5dp"
+        android:text="@string/def_sValue2"
+        android:textColor="#000000"
+        android:textSize="30sp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sValue1"
+        app:layout_constraintTop_toBottomOf="@+id/bigValue" />
+
+    <TextView
+        android:id="@+id/desc_sValue1"
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
+
+        android:paddingStart="5dp"
+        android:text="@string/def_desc_sValue1"
+        android:textColor="#4CAF50"
+        android:textSize="15sp"
+
+        app:layout_constraintStart_toStartOf="@+id/sValue1"
+        app:layout_constraintTop_toTopOf="@+id/sValue1" />
+
+    <TextView
+        android:id="@+id/desc_sValue2"
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
+        android:paddingStart="5dp"
+
+        android:text="@string/def_desc_sValue2"
+        android:textColor="#4CAF50"
+        android:textSize="15sp"
+
+        app:layout_constraintStart_toStartOf="@+id/sValue2"
+        app:layout_constraintTop_toTopOf="@+id/sValue2" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

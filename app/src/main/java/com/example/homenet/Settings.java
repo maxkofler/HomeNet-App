@@ -9,7 +9,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -31,6 +34,8 @@ public class Settings extends AppCompatActivity {
 
     Switch sw_autorefresh;
 
+    Button btn_checkUpdate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +54,28 @@ public class Settings extends AppCompatActivity {
 
         sw_autorefresh = findViewById(R.id.sw_autorefresh);
 
+        btn_checkUpdate = findViewById(R.id.btn_checkUpdate);
+
         loadChanges();
+
+        btn_checkUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://github.com/maxkofler/HomeNet-App/releases/latest"); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+
+                /*
+                Update update = new Update();
+                update.setContext(getApplicationContext());
+                update.execute("https://github.com/maxkofler/HomeNet-App/releases/latest/download/app-debug.apk");
+                 */
+            }
+        });
+
+        /*
+
+         */
 
     }
 

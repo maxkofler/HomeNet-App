@@ -9,8 +9,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -180,7 +182,7 @@ public class HomeFragment extends Fragment {
                 vs = new ValueView[countViews];
 
                 for (int i = 0; i < countViews; i++){
-                    vs[i] = new ValueView(getContext());
+                    vs[i] = new ValueView(getContext(), getScreenOrientation(getContext()));
                     vs[i].initialize(i, ip, port);
                     vs[i].setValues(vServer);
                     final int ix = i;
@@ -225,6 +227,22 @@ public class HomeFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    //0 = Portrait
+    //1 = Landscape
+    public int getScreenOrientation(Context context){
+        final int screenOrientation = ((WindowManager)  context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+        switch (screenOrientation) {
+            case Surface.ROTATION_0:
+                return 0;
+            case Surface.ROTATION_90:
+                return 1;
+            case Surface.ROTATION_180:
+                return 0;
+            default:
+                return 1;
         }
     }
 }

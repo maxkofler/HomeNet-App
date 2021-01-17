@@ -15,12 +15,12 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/d_valuedisplay"
         android:gravity="center_vertical|end"
-        android:paddingEnd="5dp"
         android:paddingTop="20dp"
+        android:paddingEnd="5dp"
         android:text="@string/def_bigValue"
         android:textColor="#000000"
         android:textSize="70sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/sValue1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,40 +42,37 @@
         android:id="@+id/sValue1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
 
         android:background="@drawable/d_valuedisplay"
         android:gravity="right"
-        android:text="@string/def_sValue1"
-        android:paddingEnd="5dp"
         android:paddingTop="15dp"
-
+        android:paddingEnd="5dp"
+        android:text="@string/def_sValue1"
         android:textColor="#000000"
         android:textSize="30sp"
-        app:layout_constraintEnd_toStartOf="@+id/sValue2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bigValue" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bigValue"
+        app:layout_constraintTop_toTopOf="@+id/bigValue" />
 
     <TextView
         android:id="@+id/sValue2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/d_valuedisplay"
 
+        android:background="@drawable/d_valuedisplay"
+        android:gravity="right"
+        android:paddingTop="15dp"
+        android:paddingEnd="5dp"
+
+        android:text="@string/def_sValue2"
         android:textColor="#000000"
         android:textSize="30sp"
-        android:text="@string/def_sValue2"
-        android:gravity="right"
-        android:paddingEnd="5dp"
-        android:paddingTop="15dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sValue1"
-        app:layout_constraintTop_toBottomOf="@+id/bigValue" />
+        app:layout_constraintBottom_toBottomOf="@+id/bigValue"
+        app:layout_constraintEnd_toEndOf="@+id/sValue1"
+        app:layout_constraintStart_toStartOf="@+id/sValue1" />
 
     <TextView
         android:id="@+id/desc_sValue1"

@@ -5,12 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -52,31 +49,36 @@ public class ValueView extends ConstraintLayout {
 
     Context context;
 
-    public ValueView(Context context) {
+    public ValueView(Context context, int rot) {
         super(context);
-        init(context);
+        init(context, rot);
     }
 
-    public ValueView(Context context, @Nullable AttributeSet attrs) {
+    public ValueView(Context context, @Nullable AttributeSet attrs, int rot) {
         super(context, attrs);
-        init(context);
+        init(context, rot);
     }
 
-    public ValueView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ValueView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int rot) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init(context, rot);
     }
 
-    public ValueView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ValueView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes, int rot) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(context);
+        init(context, rot);
     }
 
-    private void init(final Context context){
+    private void init(final Context context, int orientation){
         this.context = context;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        inflater.inflate(R.layout.layout_valueview, this);
+        if (orientation == 0){
+            inflater.inflate(R.layout.layout_valueview_portrait, this);
+        }else{
+            inflater.inflate(R.layout.layout_valueview_landscape, this);
+        }
+
 
         tv_desc_bigValue = (TextView)findViewById(R.id.desc_bigValue);
         tv_bigValue = (TextView)findViewById(R.id.bigValue);

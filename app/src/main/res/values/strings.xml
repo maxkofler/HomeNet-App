@@ -67,6 +67,7 @@
     <string name="server_port">Port:</string>
 
     <string name="autorefresh">Automatisch Aktualisieren (10 s)</string>
+    <string name="check_update">Auf Update prüfen</string>
 
     //Home fragment appearance settings
     <string name="home_settings">Startbildschirm-Einstellungen</string>
