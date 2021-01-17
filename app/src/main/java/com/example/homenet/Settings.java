@@ -12,12 +12,16 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.homenet.ui.home.HomeFragment;
+
+import java.util.ArrayList;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -35,6 +39,8 @@ public class Settings extends AppCompatActivity {
     Switch sw_autorefresh;
 
     Button btn_checkUpdate;
+
+    Spinner sp_force_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,16 @@ public class Settings extends AppCompatActivity {
         sw_autorefresh = findViewById(R.id.sw_autorefresh);
 
         btn_checkUpdate = findViewById(R.id.btn_checkUpdate);
+
+        sp_force_layout = findViewById(R.id.sp_force_layout);
+
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("---");
+        arrayList.add("Portrait");
+        arrayList.add("Landscape");
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,                         android.R.layout.simple_spinner_item, arrayList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_force_layout.setAdapter(arrayAdapter);
 
         loadChanges();
 
@@ -88,6 +104,8 @@ public class Settings extends AppCompatActivity {
         prefseditor.putInt(getString(R.string.key_historyLookBackSec), Integer.parseInt(et_cSecLookBack.getText().toString())*3600);
 
         prefseditor.putBoolean(getString(R.string.key_autorefresh), sw_autorefresh.isChecked());
+
+        prefseditor.putInt(getString(R.string.key_homeForceLayout), sp_force_layout.getSelectedItemPosition());
         prefseditor.commit();
     }
 
@@ -111,6 +129,8 @@ public class Settings extends AppCompatActivity {
         et_cSecLookBack.setText(Integer.toString(preferences.getInt(getString(R.string.key_historyLookBackSec), 48*3600)/3600));
 
         sw_autorefresh.setChecked(preferences.getBoolean(getString(R.string.key_autorefresh), false));
+
+        sp_force_layout.setSelection(preferences.getInt(getString(R.string.key_homeForceLayout), 0));
     }
 
     @Override

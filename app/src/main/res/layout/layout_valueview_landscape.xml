@@ -21,6 +21,7 @@
         android:textColor="#000000"
         android:textSize="70sp"
         app:layout_constraintEnd_toStartOf="@+id/sValue1"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,6 +73,7 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@+id/bigValue"
         app:layout_constraintEnd_toEndOf="@+id/sValue1"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="@+id/sValue1" />
 
     <TextView

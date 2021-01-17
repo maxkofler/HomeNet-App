@@ -233,16 +233,22 @@ public class HomeFragment extends Fragment {
     //0 = Portrait
     //1 = Landscape
     public int getScreenOrientation(Context context){
-        final int screenOrientation = ((WindowManager)  context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
-        switch (screenOrientation) {
-            case Surface.ROTATION_0:
-                return 0;
-            case Surface.ROTATION_90:
-                return 1;
-            case Surface.ROTATION_180:
-                return 0;
-            default:
-                return 1;
+        int forced = preferences.getInt(getString(R.string.key_homeForceLayout), 0);
+        if (forced == 0) {
+            final int screenOrientation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+            switch (screenOrientation) {
+                case Surface.ROTATION_0:
+                    return 0;
+                case Surface.ROTATION_90:
+                    return 1;
+                case Surface.ROTATION_180:
+                    return 0;
+                default:
+                    return 1;
+            }
+        }else{
+            Log.i("homenet-HomeFragment-getScreenOrientation()", "Forced a layout: " + (forced - 1));
+            return forced - 1;
         }
     }
 }

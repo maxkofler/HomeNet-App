@@ -55,7 +55,7 @@
                 android:textColor="@color/settings_headers"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/et_cTiles" />
+                app:layout_constraintTop_toBottomOf="@+id/sp_force_layout" />
 
             <View
                 android:id="@+id/divider"
@@ -149,6 +149,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/et_cTiles" />
 
+            <TextView
+                android:id="@+id/tv_cTiles2"
+                style="@style/settings_descs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/force_home_layout"
+                app:layout_constraintBottom_toBottomOf="@+id/sp_force_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sp_force_layout" />
+
             <EditText
                 android:id="@+id/et_cTiles"
                 android:layout_width="100dp"
@@ -233,6 +244,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sw_autorefresh" />
+
+            <Spinner
+                android:id="@+id/sp_force_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_cTiles" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
