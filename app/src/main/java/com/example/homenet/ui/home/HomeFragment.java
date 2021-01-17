@@ -95,6 +95,7 @@ public class HomeFragment extends Fragment {
             }
         }, 100);
 
+
         new Thread(new AutoRefresh()).start();
     }
 
