@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -159,45 +160,35 @@ public class ValueView extends ConstraintLayout {
 
     public void setValues(WSValueserver vServer){
         if (vServer.getDataAvailable()){
+            try {
+                bigVName = vServer.getValueName(bigVID);
+                bigVUnit = vServer.getValueUnit(bigVID);
 
-            bigVName = vServer.getValueName(bigVID);
-            bigVUnit = vServer.getValueUnit(bigVID);
+                sV1Name = vServer.getValueName(sV1ID);
+                sV1Unit = vServer.getValueUnit(sV1ID);
 
-            sV1Name = vServer.getValueName(sV1ID);
-            sV1Unit = vServer.getValueUnit(sV1ID);
+                sV2Name = vServer.getValueName(sV2ID);
+                sV2Unit = vServer.getValueUnit(sV2ID);
 
-            sV2Name = vServer.getValueName(sV2ID);
-            sV2Unit = vServer.getValueUnit(sV2ID);
+                setBigValueDesc(vServer.getValueName(bigVID));
+                setBigValue(vServer.getValue(bigVID) + " " + vServer.getValueUnit(bigVID));
 
-            setBigValueDesc(vServer.getValueName(bigVID));
-            setBigValue(vServer.getValue(bigVID) + " " + vServer.getValueUnit(bigVID));
+                setSValue1Desc(vServer.getValueName(sV1ID));
+                setSValue1(vServer.getValue(sV1ID) + " " + vServer.getValueUnit(sV1ID));
 
-            setSValue1Desc(vServer.getValueName(sV1ID));
-            setSValue1(vServer.getValue(sV1ID) + " " + vServer.getValueUnit(sV1ID));
-
-            setSValue2Desc(vServer.getValueName(sV2ID));
-            setSValue2(vServer.getValue(sV2ID) + " " + vServer.getValueUnit(sV2ID));
+                setSValue2Desc(vServer.getValueName(sV2ID));
+                setSValue2(vServer.getValue(sV2ID) + " " + vServer.getValueUnit(sV2ID));
+            }catch(ArrayIndexOutOfBoundsException e){
+                Log.e("homenet-setValues()", "Unable to get Value contents!");
+                e.printStackTrace();
+            }
         }else{
             System.err.println("Not refreshing tiles! -> no data available!");
         }
-
     }
-
-    /*@Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() != MotionEvent.ACTION_MOVE)
-        {
-            System.out.println("Event!");
-            openChooseDialog();
-            return super.dispatchTouchEvent(event);
-        }
-        return super.dispatchTouchEvent(event);
-    }*/
-
 
 
     public void openChooseDialog(){
-        System.out.println("Opening Choose dialog!");
         Intent intent = new Intent(getContext(), ConfigureValueDisplay.class);
         intent.putExtra("ip", ip);
         intent.putExtra("port", port);
@@ -206,7 +197,6 @@ public class ValueView extends ConstraintLayout {
     }
 
     public void openHistory(int id, String name, String unit){
-        System.out.println("Opening History!");
         Intent intent = new Intent(getContext(), History.class);
         intent.putExtra("ip", ip);
         intent.putExtra("port", port);

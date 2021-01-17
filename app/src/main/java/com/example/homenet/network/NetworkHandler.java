@@ -2,6 +2,7 @@ package com.example.homenet.network;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,12 +41,15 @@ public class NetworkHandler implements Runnable{
             sock.connect(new InetSocketAddress(ip, port), 1000);
             InputStream in = sock.getInputStream();
             OutputStreamWriter out  = new OutputStreamWriter(sock.getOutputStream());
-            InputStreamReader reader = new InputStreamReader(in);
+            //InputStreamReader reader = new InputStreamReader(in);
+
 
             StringBuilder data = new StringBuilder();
             out.write(outMsg);
             Log.i("homenet-NetworkHandler", "Written message to server: \"" + outMsg + "\"");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             out.flush();
+
 
             int its = 0;
             while (its < 3000){
@@ -64,22 +68,24 @@ public class NetworkHandler implements Runnable{
 
             boolean end = false;
             long bytesReceived = 0;
-            int sCount = 1;
-            int read;
-            while (!end){
-                read = reader.read();
-                if (read != -1){
-                    inMsg += read;
-                    bytesReceived += Character.toChars(read).length;
+            String line = "";
+            inMsg = "";
+            StringBuilder inMsgBuilder = new StringBuilder();
+            while (!end && reader.ready()){
+                line = reader.readLine() + "\n";
+                if (line != null && !line.isEmpty()){
+                    inMsgBuilder.append(line);
+                    bytesReceived += line.length();
                 }else{
                     end = true;
                 }
             }
+            inMsg = inMsgBuilder.toString();
 
             sock.close();
             in.close();
             out.close();
-            Log.i("homenet-NetworkHandler", "Closed socket");
+            Log.i("homenet-NetworkHandler", "Closed socket, read " + bytesReceived + " Bytes!");
 
         } catch (UnknownHostException e) {
             Log.e("homenet-NetworkHandler", "Host is unknown or not reachable!");
