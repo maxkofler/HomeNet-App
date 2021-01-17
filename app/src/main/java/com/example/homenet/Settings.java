@@ -89,7 +89,6 @@ public class Settings extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        System.out.println("Back pressed, promting dialog!");
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.s_exit_title))
                 .setMessage(getString(R.string.s_exit_text))

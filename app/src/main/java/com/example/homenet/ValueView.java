@@ -147,6 +147,9 @@ public class ValueView extends ConstraintLayout {
         bigVID = preferences.getInt("bigVID", 0);
         sV1ID = preferences.getInt("sV1ID", 1);
         sV2ID = preferences.getInt("sV2ID", 2);
+
+        String msg = "ValueView #" + ID + ": bigVID=" + bigVID + " sV1ID=" + sV1ID + " sV2ID=" + sV2ID;
+        Log.v("homenet-ValueView-initialize()", msg);
     }
 
     public void setBigValue(String text){ tv_bigValue.setText(text); }

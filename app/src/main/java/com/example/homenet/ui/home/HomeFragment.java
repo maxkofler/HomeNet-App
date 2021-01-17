@@ -7,6 +7,7 @@ import android.media.tv.TvInputService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class HomeFragment extends Fragment {
     private int port = 8090;
 
     private LinearLayout ll;
+    private boolean doAutoRefresh;
 
     int widgets = 0;
     View root;
@@ -72,8 +74,9 @@ public class HomeFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                swipeRefresh.setRefreshing(true);
+                refresh(true, false);
                 swipeRefresh.setRefreshing(false);
-                refresh(false, false);
             }
         });
 
@@ -92,6 +95,7 @@ public class HomeFragment extends Fragment {
             }
         }, 100);
 
+        new Thread(new AutoRefresh()).start();
     }
 
     private void refresh(boolean waitForEnd, final boolean showLoading){
@@ -115,6 +119,8 @@ public class HomeFragment extends Fragment {
 
                 ip = preferences.getString(getString(R.string.key_ServerIP), "192.168.1.24");
                 port = preferences.getInt(getString(R.string.key_ServerPort), 8090);
+
+                doAutoRefresh = preferences.getBoolean(getString(R.string.key_autorefresh), false);
 
                 vServer = new WSValueserver(ip, port);
                 connectedToServer = vServer.init(false);
@@ -154,7 +160,6 @@ public class HomeFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-
     }
 
     private void loadWidgets(int countViews){
@@ -198,6 +203,25 @@ public class HomeFragment extends Fragment {
                         }
                     });
 
+                }
+            }
+        }
+    }
+
+    class AutoRefresh implements Runnable{
+
+        private int sleep = 10;
+
+        @Override
+        public void run() {
+            Log.i("homenet-AutoRefresh-run()", "Starting to autorefresh values in " + sleep + "s interval!");
+            while (doAutoRefresh) {
+                refresh(true, false);
+                Log.v("homenet-AutoRefresh-run()", "Refreshed values!");
+                try {
+                    Thread.sleep(sleep*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
