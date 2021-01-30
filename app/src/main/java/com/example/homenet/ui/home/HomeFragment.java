@@ -64,6 +64,8 @@ public class HomeFragment extends Fragment {
     SwipeRefreshLayout swipeRefresh;
     ProgressDialog dialog;
 
+    boolean autoRefreshRunning = false;
+    Thread autoRefreshThread;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -95,10 +97,39 @@ public class HomeFragment extends Fragment {
             public void run() {
                 refresh(true, false);
             }
-        }, 100);
+        }, 200);
 
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startAutoRefresh();
+            }
+        }, 200);
 
-        new Thread(new AutoRefresh()).start();
+    }
+
+    private void startAutoRefresh(){
+        if (doAutoRefresh){
+            Log.i("homenet-startAutoRefresh()", "Starting autorefreshing of values!");
+            if (autoRefreshRunning){
+                autoRefreshThread.interrupt();
+                autoRefreshRunning = false;
+            }
+            autoRefreshThread = new Thread(new AutoRefresh());
+            autoRefreshThread.start();
+            autoRefreshRunning = true;
+        }
+
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        if (autoRefreshRunning)
+        {
+            autoRefreshThread.interrupt();
+            autoRefreshRunning = false;
+        }
     }
 
     private void refresh(boolean waitForEnd, final boolean showLoading){
@@ -116,7 +147,6 @@ public class HomeFragment extends Fragment {
                 }
 
                 connectedToServer = false;
-
                 preferences = getActivity().getSharedPreferences(getString(R.string.key_hnSavesFile), Context.MODE_PRIVATE);
                 prefseditor = preferences.edit();
 
@@ -213,20 +243,23 @@ public class HomeFragment extends Fragment {
 
     class AutoRefresh implements Runnable{
 
-        private int sleep = 10;
+        private int sleep = 5;
 
         @Override
         public void run() {
-            Log.i("homenet-AutoRefresh-run()", "Starting to autorefresh values in " + sleep + "s interval!");
-            while (doAutoRefresh) {
-                refresh(true, false);
-                Log.v("homenet-AutoRefresh-run()", "Refreshed values!");
-                try {
+            try{
+                Log.i("homenet-AutoRefresh-run()", "Autorefreshing values in " + sleep + "s interval!");
+
+
+                while (doAutoRefresh && !Thread.currentThread().isInterrupted()) {
                     Thread.sleep(sleep*1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    refresh(true, false);
+                    Log.v("homenet-AutoRefresh-run()", "Refreshed values!");
                 }
+            }catch(InterruptedException e){
+                Log.e("homenet-AutoRefresh-run()", "Thread was interrupted!");
             }
+
         }
     }
 
