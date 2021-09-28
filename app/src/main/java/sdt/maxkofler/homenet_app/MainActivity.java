@@ -23,7 +23,7 @@ public class MainActivity extends Activity {
 
         this.valuesLayout = findViewById(R.id.values_layout);
 
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < 3; i++){
             this.valuesLayout.addView(new ValueView(getApplicationContext(), 0));
         }
     }

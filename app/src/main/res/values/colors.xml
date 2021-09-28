@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background">#FFFFFF</color>
+
+    <color name="bg_valueView">#E0F7FA</color>
+    <color name="st_valueView">#B2EBF2</color>
+    <color name="sh_valueView">#80E0F7FA</color>
+    
+    <color name="tc_valueView_sValues">#000000</color>
+    <color name="tc_valueView_dsValues">#80000000</color>
+    <color name="tc_valueView_bValue">#000000</color>
+    <color name="tc_valueView_dbValue">#80000000</color>
 </resources>

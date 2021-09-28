@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+This is the central controlling file for the layout
+
+naming:
+
+"<group of elements the value controls>_<type>_<control name>"
+e.g: "<valueview_pdT_main>"
+
+group of elements the value controls:
+    e.g: valueview -> ValueViews (controls all the things about valueViews)
+
+type:
+    The type the control is for:
+        ts      text size
+        pd      padding*
+        margin  margin*
+
+        *Can be appended with the following:
+            T   top
+            B   bottom
+            L   left
+            R   right
+        e.g: marginT -> top margin
+
+control name:
+    The name for the control
+
+-->
+
+<resources>
+    <!--            -->
+    <!-- ValueViews -->
+    <!--            -->
+        <!-- Font size of textviews -->
+        <dimen name="valueview_ts_sValue">50sp</dimen>
+        <dimen name="valueview_ts_dsValue">20sp</dimen>
+        <dimen name="valueview_ts_bValue">70sp</dimen>
+        <dimen name="valueview_ts_dbValue">30sp</dimen>
+
+        <!-- Padding of text in textviews -->
+        <dimen name="valueview_pdT_sValue">20dp</dimen>
+        <dimen name="valueview_pdB_sValue">3dp</dimen>
+        <dimen name="valueview_pdT_bValue">25dp</dimen>
+        <dimen name="valueview_pdB_bValue">6dp</dimen>
+
+        <!-- Margins of value description text views -->
+        <dimen name="valueview_marginT_tv_d_sValues">2dp</dimen>
+        <dimen name="valueview_marginL_tv_d_sValues">5dp</dimen>
+        <dimen name="valueview_marginT_tv_d_bValue">2dp</dimen>
+        <dimen name="valueview_marginL_tv_d_bValue">5dp</dimen>
+
+        <!-- Margins of textviews to each other -->
+        <dimen name="valueview_margin_tv_values">1dp</dimen>
+        <dimen name="valueview_marginT_values">10dp</dimen>
+        <dimen name="valueview_marginB_values">2dp</dimen>
+</resources>
