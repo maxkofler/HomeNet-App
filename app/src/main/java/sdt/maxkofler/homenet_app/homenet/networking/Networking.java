@@ -1,4 +1,4 @@
-package sdt.maxkofler.homenet_app.homenet;
+package sdt.maxkofler.homenet_app.homenet.networking;
 
 import android.util.Log;
 
@@ -7,25 +7,29 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Semaphore;
 
 import sdt.maxkofler.homenet_app.homenet.exceptions.ConnectException;
 
-public class NetworkInterface {
-    private static final String cN = "HomeNet:NetworkInterface";
-
+public class Networking {
+    private static final String cN = "HomeNet-App:Networking";
     private Socket socket;
     private String serverAddress;
     private int serverPort;
     private int timeout;
 
-    public NetworkInterface(){
+    public enum job_type{
+        CONNECT,
+        SEND_FOR_RESPONSE
+    }
+
+    public Networking(){
         this.timeout = 1000;
         this.serverAddress = "";
         this.serverPort = 0;
     }
 
-    public void connect() throws  ConnectException{
+    public void connect() throws ConnectException {
 
         {//Check critical values
             if (this.serverAddress.isEmpty())
@@ -36,6 +40,7 @@ public class NetworkInterface {
         }
 
         {//Try connecting
+            this.socket = new Socket();
             SocketAddress address = new InetSocketAddress(this.serverAddress, this.serverPort);
             try{
                 this.socket.connect(address, this.timeout);
@@ -48,7 +53,6 @@ public class NetworkInterface {
             }
         }
     }
-
     public void connect(String address, int port, int timeout) throws ConnectException{
         {//Set values
             this.setServerAddress(address);
@@ -61,6 +65,10 @@ public class NetworkInterface {
         }
     }
 
+    public String sendForResponse(String message){
+        return "";
+    }
+
     public void setServerAddress(String address){
         this.serverAddress = address;
     }
@@ -71,5 +79,17 @@ public class NetworkInterface {
 
     public void setTimeout(int timeout){
         this.timeout = timeout;
+    }
+
+    public String getServerAddress() {
+        return serverAddress;
+    }
+
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public int getTimeout() {
+        return timeout;
     }
 }
