@@ -2,7 +2,10 @@ package sdt.maxkofler.homenet_app.homenet.networking;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -10,18 +13,16 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.Semaphore;
 
 import sdt.maxkofler.homenet_app.homenet.exceptions.ConnectException;
+import sdt.maxkofler.homenet_app.homenet.exceptions.NetworkException;
 
 public class Networking {
     private static final String cN = "HomeNet-App:Networking";
     private Socket socket;
+    private PrintWriter out;
+    private BufferedReader in;
     private String serverAddress;
     private int serverPort;
     private int timeout;
-
-    public enum job_type{
-        CONNECT,
-        SEND_FOR_RESPONSE
-    }
 
     public Networking(){
         this.timeout = 1000;
@@ -30,6 +31,7 @@ public class Networking {
     }
 
     public void connect() throws ConnectException {
+        long start = System.currentTimeMillis();
 
         {//Check critical values
             if (this.serverAddress.isEmpty())
@@ -52,6 +54,17 @@ public class Networking {
                 throw new ConnectException(ConnectException.SERVER_IOEXCEPTION + ": " + e.getMessage());
             }
         }
+
+        {//Get writer and reader
+            try{
+                this.out = new PrintWriter(this.socket.getOutputStream());
+                this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.d(cN + ".connect()", "Done after " + (System.currentTimeMillis() - start) + " ms");
     }
     public void connect(String address, int port, int timeout) throws ConnectException{
         {//Set values
@@ -65,8 +78,68 @@ public class Networking {
         }
     }
 
-    public String sendForResponse(String message){
-        return "";
+    public void disconnect() {
+        long start = System.currentTimeMillis();
+
+        if (this.socket != null){
+            try {
+                this.socket.close();
+            } catch (IOException e) {
+                Log.e(cN + ".disconnect()", "Failed to close socket to server: " + this.socket.toString());
+            } finally {
+                this.socket = null;
+                this.serverAddress = "";
+                this.serverPort = 0;
+                System.gc();
+            }
+        }else{
+            Log.w(cN + ".disconnect()", "Socket was already closed or never connected");
+        }
+
+        Log.d(cN + ".disconnect()", "Done after " + (System.currentTimeMillis() - start) + " ms");
+    }
+
+    public String sendForResponse(String message) throws NetworkException{
+        long start = System.currentTimeMillis();
+
+        String ret = "";
+
+        {//Check for connection
+            if(!this.socket.isConnected())
+                throw new NetworkException(NetworkException.NOT_CONNECTED);
+        }
+
+        {//
+            //Wait for response
+
+            Log.d(cN + ".sendForResponse()", "Sending \"" + message + "\" for response...");
+
+            this.out.println(message);
+            this.out.flush();
+
+            String rec;
+            boolean end = false;
+            do{
+                try {
+                    rec = this.in.readLine();
+
+                    if (rec.equals("<eot>")) {
+                        end = true;
+                        Log.d(cN + ".sendForResponse()", "Received end of transmission, length: " + ret.length() + " bytes");
+                    }
+                    else{
+                        ret += rec + "\n";
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }while(!end);
+        }
+
+        Log.d(cN + ".sendForResponse()", "Done after " + (System.currentTimeMillis() - start) + " ms");
+        return ret;
     }
 
     public void setServerAddress(String address){

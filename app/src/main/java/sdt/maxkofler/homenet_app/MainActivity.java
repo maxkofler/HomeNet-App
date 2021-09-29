@@ -16,30 +16,14 @@ import sdt.maxkofler.homenet_app.homenet.HomeNet;
 import sdt.maxkofler.homenet_app.homenet.networking.NetworkCallback;
 import sdt.maxkofler.homenet_app.homenet.networking.Networking;
 
+//Search for "@NETWORKING_LOG" to find commented out networking log calls (autoreplace with "" to enable all)
+
 public class MainActivity extends Activity implements NetworkCallback {
+    private static final String cN = "HomeNet-App:Main";
 
     // Used to load the 'homenet_app' library on application startup.
     static {
         System.loadLibrary("homenet_app");
-    }
-
-    private LinearLayout valuesLayout;
-
-    private HomeNet homeNet;
-
-    private Semaphore waitUntilConnect;
-    private ProgressDialog progress;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        this.homeNet = new HomeNet("10.8.0.3", 8080);
-
-        homeNet.connect(this);
-
-        this.valuesLayout = findViewById(R.id.values_layout);
     }
 
     /**
@@ -48,9 +32,63 @@ public class MainActivity extends Activity implements NetworkCallback {
      */
     public native String stringFromJNI();
 
+    private MainActivity self;
+
+    private LinearLayout valuesLayout;
+
+    private HomeNet homeNet;
+
+    private Semaphore wait;
+    private ProgressDialog progress;
+
     @Override
-    public void done(Networking.job_type job, String[] res) {
-        if (job == Networking.job_type.CONNECT){
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        this.self = this;
+        this.wait = new Semaphore(1);
+
+        this.homeNet = new HomeNet("10.8.0.3", 8080);
+
+        homeNet.connect(this);
+
+        this.valuesLayout = findViewById(R.id.values_layout);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Log.i(cN + ".onStop()", "Quiting HomeNet-App started...");
+
+        try {
+            this.wait.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.homeNet.disconnect(this);
+        Log.d(cN + ".onStop()", "Waiting for disconnect to finish...");
+        try {
+            this.wait.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.d(cN + ".onStop()", "Disconnect succeeded, continuing to finish...");
+
+        this.homeNet.stopWorker();
+        this.homeNet = null;
+
+
+        //Run a final garbage collector
+        System.gc();
+
+        Log.i(cN + ".onStop()", "Quited HomeNet-App, bye!");
+    }
+
+    @Override
+    public void done(NetworkCallback.job_type job, String[] res) {
+        if (job == NetworkCallback.job_type.CONNECT){
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -59,6 +97,18 @@ public class MainActivity extends Activity implements NetworkCallback {
                     }
                 }
             });
+
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    homeNet.sync(self);
+                }
+            });
+            t.start();
+        }
+
+        if (job == job_type.DISCONNECT){
+            this.wait.release();
         }
     }
 
