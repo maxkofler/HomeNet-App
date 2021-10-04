@@ -43,8 +43,8 @@ public class NetworkRunnable implements Runnable {
         Log.v(cN + ".deploy()", "Deploying job: CONNECT");
         current_job = NetworkCallback.job_type.CONNECT;
         this.callback = callback;
-        Log.v(cN + ".deploy()", "Deployed job: CONNECT");
         this.mutexGo.release();
+        Log.v(cN + ".deploy()", "Deployed job: CONNECT");
     }
 
     public void deployDisconnect(@Nullable NetworkCallback callback){
@@ -52,8 +52,8 @@ public class NetworkRunnable implements Runnable {
         Log.v(cN + ".deploy()", "Deploying job: DISCONNECT");
         current_job = NetworkCallback.job_type.DISCONNECT;
         this.callback = callback;
-        Log.v(cN + ".deploy()", "Deployed job: DISCONNECT");
         this.mutexGo.release();
+        Log.v(cN + ".deploy()", "Deployed job: DISCONNECT");
     }
 
     public void deploySendForResponse(String message, @Nullable NetworkCallback callback){
@@ -113,34 +113,42 @@ public class NetworkRunnable implements Runnable {
                     ok = true;
                 } catch (ConnectException e){
                     //Try calling the callback, else output the error
-                    if (this.callback != null)
-                        this.callback.error(e);
+                    if (this.callback != null) {
+                        this.callback.error(this.current_job, e);
+                        Log.d(cN + ".run(exception)", "Error callback joined!");
+                    }
                     else{
                         Log.e(cN + ".run()", "UNHANDLED CONNECT EXCEPTION: " + e.getMessage());
                         e.printStackTrace();
                     }
                 } catch (NetworkException e){
                     //Try calling the callback, else output the error
-                    if (this.callback != null)
-                        this.callback.error(e);
+                    if (this.callback != null) {
+                        this.callback.error(this.current_job, e);
+                        Log.d(cN + ".run(exception)", "Error callback joined!");
+                    }
                     else{
                         Log.e(cN + ".run()", "UNHANDLED NETWORK EXCEPTION: " + e.getMessage());
                         e.printStackTrace();
                     }
                 }
-
             }
 
             if (ok){//Call the callback and release mutexes
                 Log.d(cN + ".run()", "Job done!");
                 if (this.callback != null)
-                    this.callback.done(this.current_job, this.results.clone());
+                    if (this.results != null)
+                        this.callback.done(this.current_job, this.results.clone());
+                    else
+                        this.callback.done(this.current_job, null);
 
                 this.mutexGo.release();
                 this.mutexWIP.release();
             }
 
             {//Lock this loop again until a deploy function releases it and this loop can do work
+                this.mutexWIP.release();
+                this.mutexGo.release();
                 try {
                     this.mutexGo.acquire();
                 } catch (InterruptedException e) {
@@ -152,15 +160,18 @@ public class NetworkRunnable implements Runnable {
 
     }
 
+    private void resetMutexes(){
+
+    }
+
     private void waitForFinish(String nextJob){
-        Log.d(cN + ".deploy", "Waiting for previous workload to finish, next job: " + nextJob);
+        Log.d(cN + ".deploy()", "Waiting for previous workload to finish, next job: " + nextJob + " current job: " + this.current_job);
         try {
             this.mutexWIP.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
+            Log.d(cN + ".deploy()", "Previous workload finished!");
             this.mutexWIP.release();
+        } catch (InterruptedException e) {
+            Log.e(cN + ".waitForFinish()", "Failed to acquire mutex: InterruptedException: " + e.getMessage());
         }
-        Log.d(cN + ".deploy", "Previous workload finished!");
     }
 }

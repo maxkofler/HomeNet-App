@@ -63,7 +63,7 @@ public class HomeNet implements NetworkCallback {
     }
 
     @Override
-    public void error(Exception e) {
+    public void error(job_type job, Exception e) {
 
     }
 

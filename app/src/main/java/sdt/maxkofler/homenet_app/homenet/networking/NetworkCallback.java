@@ -9,5 +9,5 @@ public interface NetworkCallback {
     }
 
     void done(NetworkCallback.job_type job_type, String[] results);
-    void error(Exception e);
+    void error(NetworkCallback.job_type job_type, Exception e);
 }

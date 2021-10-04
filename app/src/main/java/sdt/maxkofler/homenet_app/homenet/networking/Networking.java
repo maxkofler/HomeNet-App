@@ -48,10 +48,10 @@ public class Networking {
                 this.socket.connect(address, this.timeout);
             } catch (SocketTimeoutException e) {
                 Log.e(cN + ".connect()", "Socket timed out after " + this.timeout + "ms: " + e.getMessage());
-                throw new ConnectException(ConnectException.SERVER_TIMED_OUT + ": " + e.getMessage());
+                throw new ConnectException(ConnectException.SERVER_TIMED_OUT);
             } catch (IOException e){
                 Log.e(cN + ".connect()", "Socket connection had IOException: " + e.getMessage());
-                throw new ConnectException(ConnectException.SERVER_IOEXCEPTION + ": " + e.getMessage());
+                throw new ConnectException(ConnectException.SERVER_IOEXCEPTION);
             }
         }
 
