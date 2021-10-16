@@ -2,14 +2,18 @@ package sdt.maxkofler.homenet_app.homenet.routines;
 
 import android.content.Context;
 import android.content.Intent;
+import android.renderscript.Sampler;
 import android.util.Log;
 
 import java.util.concurrent.Semaphore;
 
 import sdt.maxkofler.homenet_app.MainActivity;
 import sdt.maxkofler.homenet_app.SettingsActivity;
+import sdt.maxkofler.homenet_app.ValueView;
+import sdt.maxkofler.homenet_app.ValuesManager;
 import sdt.maxkofler.homenet_app.homenet.HomeNet;
 import sdt.maxkofler.homenet_app.homenet.exceptions.ConnectException;
+import sdt.maxkofler.homenet_app.homenet.homenet.HNValue;
 import sdt.maxkofler.homenet_app.homenet.networking.NetworkCallback;
 
 public class StartupRoutine implements NetworkCallback {
@@ -17,14 +21,16 @@ public class StartupRoutine implements NetworkCallback {
     private Context context;
     private MainActivity mainActivity;
     private HomeNet homenet;
+    private ValuesManager valuesManager;
 
     private ErrorHandler errorHandlerThread;
     private Semaphore errorHandlerRunMutex;
 
-    public StartupRoutine(Context context, HomeNet homenet, MainActivity mainActivity){
+    public StartupRoutine(Context context, HomeNet homenet, MainActivity mainActivity, ValuesManager manager){
         this.homenet = homenet;
         this.context = context;
         this.mainActivity = mainActivity;
+        this.valuesManager = manager;
         this.errorHandlerRunMutex = new Semaphore(1);
         stopErrorHandler();
         this.errorHandlerThread = new ErrorHandler(this.context, this.errorHandlerRunMutex);
@@ -37,7 +43,40 @@ public class StartupRoutine implements NetworkCallback {
 
     @Override
     public void done(job_type job_type, String[] results) {
+        if (job_type == NetworkCallback.job_type.CONNECT){
+            //this.valuesManager.addValues(2);
+            this.homenet.sync(this);
+        }
 
+        //Callback from HomeNet::sync()
+        if (job_type == NetworkCallback.job_type.SEND_FOR_RESPONSE){
+            this.valuesManager.addValues(this.homenet.getValuesCount() / 3);
+            int curValuePos = 0;
+            int curValueInd = 0;
+            for (HNValue curValue : this.homenet.getValues()){
+                if (curValuePos >= 3){
+                    curValuePos = 0;
+                    curValueInd++;
+                }
+
+                switch (curValuePos){
+                    case 0:
+                        this.valuesManager.setValue(curValueInd, ValueView.Value.sV1, curValue);
+                        break;
+                    case 1:
+                        this.valuesManager.setValue(curValueInd, ValueView.Value.sV2, curValue);
+                        break;
+                    case 2:
+                        this.valuesManager.setValue(curValueInd, ValueView.Value.bV, curValue);
+                        break;
+                    default:
+                        curValuePos = 0;
+                        curValueInd++;
+                        break;
+                }
+                curValuePos++;
+            }
+        }
     }
 
     @Override

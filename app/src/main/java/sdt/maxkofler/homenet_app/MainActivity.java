@@ -3,14 +3,18 @@ package sdt.maxkofler.homenet_app;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import java.util.concurrent.Semaphore;
 
@@ -47,23 +51,45 @@ public class MainActivity extends Activity implements NetworkCallback{
     private ProgressDialog progress;
 
     private StartupRoutine startupRoutine;
+    private ValuesManager valuesManager;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor prefseditor;
+
+    private Button buttonSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        this.prefseditor = preferences.edit();
+
         this.self = this;
         this.wait = new Semaphore(1);
 
+        this.buttonSettings = findViewById(R.id.main_btn_settings);
+        this.buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        this.homeNet = new HomeNet("10.8.0.34", 8080);
 
-        //homeNet.connect(null);
-
-        this.startupRoutine = new StartupRoutine(getApplicationContext(), this.homeNet, this);
+        {
+            String ip = this.preferences.getString(getString(R.string.key_server_ip), "localhost");
+            int port = Integer.parseInt(this.preferences.getString(getString(R.string.key_server_port), "8080"));
+            this.homeNet = new HomeNet(ip, port);
+        }
 
         this.valuesLayout = findViewById(R.id.values_layout);
+
+        this.valuesManager = new ValuesManager(this, this.valuesLayout, this.homeNet);
+
+        this.startupRoutine = new StartupRoutine(getApplicationContext(), this.homeNet, this, this.valuesManager);
     }
 
     @Override

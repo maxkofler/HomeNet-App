@@ -2,13 +2,15 @@
     <string name="app_name">HomeNet-App</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <string name="preferences_key">sdt.maxkofler.homenet_app_preferences.xml</string>
+
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
+    <string name="connection_header">Connection</string>
     <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="ip_title">IP / Hostname</string>
+    <string name="port_title">Port</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>

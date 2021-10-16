@@ -142,8 +142,8 @@ public class NetworkRunnable implements Runnable {
                     else
                         this.callback.done(this.current_job, null);
 
-                this.mutexGo.release();
-                this.mutexWIP.release();
+                //this.mutexGo.release();
+                //this.mutexWIP.release();
             }
 
             {//Lock this loop again until a deploy function releases it and this loop can do work

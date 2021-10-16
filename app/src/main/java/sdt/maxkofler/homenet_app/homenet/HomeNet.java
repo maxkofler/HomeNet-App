@@ -4,10 +4,15 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
 import sdt.maxkofler.homenet_app.MainActivity;
 import sdt.maxkofler.homenet_app.homenet.exceptions.ConnectException;
+import sdt.maxkofler.homenet_app.homenet.homenet.HNParser;
+import sdt.maxkofler.homenet_app.homenet.homenet.HNValue;
 import sdt.maxkofler.homenet_app.homenet.networking.NetworkCallback;
 import sdt.maxkofler.homenet_app.homenet.networking.NetworkInterface;
 import sdt.maxkofler.homenet_app.homenet.networking.Networking;
@@ -25,10 +30,13 @@ public class HomeNet implements NetworkCallback {
 
     private Semaphore syncMutex;
 
+    private Vector<HNValue> values;
+
     //Container for error messages for inner classes
     private String eMessage = "";
 
     public HomeNet(String address, int port){
+        this.values = new Vector<>();
         this.syncMutex = new Semaphore(1);
         this.networkInterface = new NetworkInterface();
         this.networkInterface.setServerAddress(address);
@@ -69,10 +77,23 @@ public class HomeNet implements NetworkCallback {
 
     @Override
     public void done(NetworkCallback.job_type job_type, String[] results) {
-        if (job_type == NetworkCallback.job_type.SEND_FOR_RESPONSE){
+        if (job_type == NetworkCallback.job_type.SEND_FOR_RESPONSE && results.length == 1){
             //@NETWORKING_LOGLog.v(cN + ".done()", "Received \"" + results[0] + "\"");
 
-            this.sync_callback.done(job_type, results);
+            //The sync() call results in this piece of code
+            HNParser parser = new HNParser();
+            parser.parse(new BufferedReader(new StringReader(results[0])));
+
+            this.values.clear();
+            for (Vector<String> line : parser.getBlocks()){
+                HNValue newValue = new HNValue();
+                if (newValue.fetch(line)){
+                    this.values.add(newValue);
+                }
+            }
+
+            if (this.sync_callback != null)
+                this.sync_callback.done(job_type, results);
         }
     }
 
@@ -89,5 +110,13 @@ public class HomeNet implements NetworkCallback {
 
     private void unlock(){
         this.syncMutex.release();
+    }
+
+    public int getValuesCount(){
+        return this.values.size();
+    }
+
+    public Vector<HNValue> getValues(){
+        return this.values;
     }
 }
